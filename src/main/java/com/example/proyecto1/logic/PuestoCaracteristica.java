@@ -14,7 +14,7 @@ public class PuestoCaracteristica {
 
     @MapsId("idPuesto")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_puesto", nullable = false)
+    @JoinColumn(name = "id_puesto", nullable = false,columnDefinition = "VARCHAR(20)")
     private Puesto idPuesto;
 
     @MapsId("idCaracteristica")

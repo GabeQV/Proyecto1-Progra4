@@ -5,7 +5,7 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PostulacionRepository extends CrudRepository<Postulacion,String> {
+public interface PostulacionRepository extends CrudRepository<Postulacion,Integer> {
 
 }
 

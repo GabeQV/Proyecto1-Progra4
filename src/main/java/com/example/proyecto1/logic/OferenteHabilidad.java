@@ -14,7 +14,7 @@ public class OferenteHabilidad {
 
     @MapsId("idOferente")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "id_oferente", nullable = false)
+    @JoinColumn(name = "id_oferente", nullable = false,columnDefinition = "VARCHAR(20)")
     private Oferente idOferente;
 
     @MapsId("idCaracteristica")
