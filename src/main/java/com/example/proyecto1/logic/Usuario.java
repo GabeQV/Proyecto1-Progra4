@@ -1,9 +1,6 @@
 package com.example.proyecto1.logic;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,5 +30,12 @@ public class Usuario {
     @Column(name = "activo")
     private Boolean activo;
 
+    // Relación de vuelta hacia Empresa
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Empresa empresa;
+
+    // Relación de vuelta hacia Oferente
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Oferente oferente;
 
 }
