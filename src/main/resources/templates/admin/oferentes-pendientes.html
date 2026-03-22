@@ -33,7 +33,7 @@
             <tbody>
             <tr th:each="oferente : ${oferentes}">
                 <td th:text="${oferente.usuario.correo}"></td>
-                <td th:text="${oferente.nombre + ' ' + oferente.primerApellido}"></td>
+                <td th:text="${oferente.nombre + ' ' + oferente.primerApellido + (oferente.segundoApellido != null ? ' ' + oferente.segundoApellido : '')}"></td>
                 <td class="text-center">
                     <form th:action="@{/admin/oferentes/aprobar/{id}(id=${oferente.id})}" method="post">
                         <button type="submit" class="btn btn-success">Aprobar</button>

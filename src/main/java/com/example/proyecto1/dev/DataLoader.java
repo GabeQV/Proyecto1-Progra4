@@ -83,7 +83,8 @@ public class DataLoader implements CommandLineRunner {
             userOferentePendiente.setActivo(false);
 
             Oferente oferentePendiente = new Oferente();
-            oferentePendiente.setNombre("Carlos Rojas");
+            oferentePendiente.setNombre("Carlos");
+            oferentePendiente.setPrimerApellido("Rojas");
             oferentePendiente.setAprobado(false);
 
             // Vinculamos en ambas direcciones
