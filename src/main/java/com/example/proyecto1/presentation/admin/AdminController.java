@@ -1,6 +1,8 @@
 package com.example.proyecto1.presentation.admin;
 
 import com.example.proyecto1.data.UsuarioRepository;
+import com.example.proyecto1.data.OferenteRepository;
+import com.example.proyecto1.logic.Oferente;
 import com.example.proyecto1.logic.Usuario;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,10 +24,12 @@ public class AdminController {
 
     private final UsuarioRepository usuarioRepository;
     private final EmpresaRepository empresaRepository;
+    private final OferenteRepository oferenteRepository;
 
-    public AdminController(UsuarioRepository usuarioRepository, EmpresaRepository empresaRepository) {
+    public AdminController(UsuarioRepository usuarioRepository, EmpresaRepository empresaRepository, OferenteRepository oferenteRepository) {
         this.usuarioRepository = usuarioRepository;
         this.empresaRepository = empresaRepository;
+        this.oferenteRepository = oferenteRepository;
     }
 
 
@@ -70,5 +74,38 @@ public class AdminController {
             }
         });
         return "redirect:/admin/empresas-pendientes";
+    }
+
+    @GetMapping("/oferentes-pendientes")
+    public String showOferentesPendientes(Model model, Principal principal) {
+        // Obtenemos la información del admin para el header
+        Usuario admin = usuarioRepository.findById(principal.getName()).orElse(null);
+        model.addAttribute("adminEmail", admin != null ? admin.getCorreo() : "No encontrado");
+
+        // Buscamos y añadimos la lista de oferentes pendientes al modelo
+        List<Oferente> oferentesPendientes = oferenteRepository.findByAprobadoFalse();
+        model.addAttribute("oferentes", oferentesPendientes);
+
+        return "admin/oferentes-pendientes"; // Nueva vista que crearemos
+    }
+
+    @PostMapping("/oferentes/aprobar/{oferenteId}")
+    public String aprobarOferente(@PathVariable String oferenteId) {
+        // Buscamos al oferente por su ID
+        oferenteRepository.findById(oferenteId).ifPresent(oferente -> {
+            // Buscamos al usuario asociado
+            Usuario usuario = oferente.getUsuario();
+            if (usuario != null) {
+                // Actualizamos el estado en ambas entidades
+                oferente.setAprobado(true);
+                usuario.setActivo(true);
+
+                // Guardamos los cambios. Gracias al Cascade, solo necesitamos guardar el usuario.
+                usuarioRepository.save(usuario);
+            }
+        });
+
+        // Redirigimos de vuelta a la lista de pendientes
+        return "redirect:/admin/oferentes-pendientes";
     }
 }
