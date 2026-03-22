@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<!-- Fragmento del Header para el Admin -->
+<header class="bg-dark text-white p-3">
+  <div class="container d-flex justify-content-between align-items-center">
+    <!-- Logo y Navegación -->
+    <div class="d-flex align-items-center">
+      <h4 class="me-4 mb-0">BolsaEmpleo</h4>
+      <nav>
+        <a th:href="@{/admin/dashboard}" class="text-white me-3 text-decoration-none fw-bold">Dashboard</a>
+        <a th:href="@{/admin/empresas-pendientes}" class="text-white-50 me-3 text-decoration-none">Empresas pendientes</a>
+        <a th:href="@{/admin/oferentes-pendientes}" class="text-white-50 me-3 text-decoration-none">Oferentes pendientes</a>
+        <a th:href="@{/admin/caracteristicas}" class="text-white-50 me-3 text-decoration-none">Características</a>
+        <a th:href="@{/admin/reportes}" class="text-white-50 text-decoration-none">Reportes</a>
+      </nav>
+    </div>
+
+    <!-- Correo y Botón de Salir -->
+    <div class="d-flex align-items-center">
+      <span class="me-3" th:text="${adminEmail}">admin@tuorg.com</span>
+      <form th:action="@{/logout}" method="post" class="mb-0">
+        <button type="submit" class="btn btn-outline-light btn-sm">Salir</button>
+      </form>
+    </div>
+  </div>
+</header>
+
+</body>
+</html>

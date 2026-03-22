@@ -1,6 +1,8 @@
 package com.example.proyecto1.dev;
 
 import com.example.proyecto1.data.UsuarioRepository;
+import com.example.proyecto1.logic.Empresa;
+import com.example.proyecto1.logic.Oferente;
 import com.example.proyecto1.logic.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -20,12 +22,10 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("Cargando datos de prueba...");
 
-        // Solo cargar datos si no existen para evitar duplicados
         if (usuarioRepository.count() == 0) {
-            // ---- Contraseña para todos los usuarios: "123" ----
             String password = passwordEncoder.encode("123");
 
-            // 1. Usuario Administrador
+            // --- 1. Usuario Administrador ---
             Usuario admin = new Usuario();
             admin.setId("admin");
             admin.setCorreo("admin@bolsaempleo.com");
@@ -33,53 +33,69 @@ public class DataLoader implements CommandLineRunner {
             admin.setRolUsuario("ADMIN");
             admin.setActivo(true);
             usuarioRepository.save(admin);
-            System.out.println("Creado usuario: admin, rol: ADMIN, clave: 123");
+            System.out.println("Creado usuario: admin");
 
-            // 2. Usuario Empresa (Aprobado)
-            Usuario empresaAprobada = new Usuario();
-            empresaAprobada.setId("empresa1");
-            empresaAprobada.setCorreo("empresa1@test.com");
-            empresaAprobada.setClave(password);
-            empresaAprobada.setRolUsuario("EMPRESA");
-            empresaAprobada.setActivo(true); // Esta empresa ya fue aprobada
-            usuarioRepository.save(empresaAprobada);
-            System.out.println("Creado usuario: empresa1, rol: EMPRESA, clave: 123");
+            // --- 2. Empresa Aprobada ---
+            Usuario userEmpresaAprobada = new Usuario();
+            userEmpresaAprobada.setId("empresa1");
+            userEmpresaAprobada.setCorreo("empresa1@test.com");
+            userEmpresaAprobada.setClave(password);
+            userEmpresaAprobada.setRolUsuario("EMPRESA");
+            userEmpresaAprobada.setActivo(true);
 
-            // 3. Usuario Empresa (Pendiente de aprobación)
-            Usuario empresaPendiente = new Usuario();
-            empresaPendiente.setId("empresa2");
-            empresaPendiente.setCorreo("empresa2@test.com");
-            empresaPendiente.setClave(password);
-            empresaPendiente.setRolUsuario("EMPRESA");
-            empresaPendiente.setActivo(false); // Esta empresa está pendiente de aprobación
-            usuarioRepository.save(empresaPendiente);
-            System.out.println("Creado usuario: empresa2, rol: EMPRESA, clave: 123 (PENDIENTE)");
+            Empresa empresaAprobada = new Empresa();
+            // No seteamos el ID aquí. Se derivará automáticamente.
+            empresaAprobada.setNombre("Tech Solutions Inc.");
+            empresaAprobada.setAprobado(true);
 
+            // Vinculamos en ambas direcciones
+            userEmpresaAprobada.setEmpresa(empresaAprobada);
+            empresaAprobada.setUsuario(userEmpresaAprobada);
 
-            // 4. Usuario Oferente (Aprobado)
-            Usuario oferenteAprobado = new Usuario();
-            oferenteAprobado.setId("oferente1");
-            oferenteAprobado.setCorreo("oferente1@test.com");
-            oferenteAprobado.setClave(password);
-            oferenteAprobado.setRolUsuario("OFERENTE");
-            oferenteAprobado.setActivo(true); // Este oferente ya fue aprobado
-            usuarioRepository.save(oferenteAprobado);
-            System.out.println("Creado usuario: oferente1, rol: OFERENTE, clave: 123");
+            usuarioRepository.save(userEmpresaAprobada); // Solo guardamos el usuario
+            System.out.println("Creada empresa aprobada: empresa1");
 
-            // 5. Usuario Oferente (Pendiente de aprobación)
-            Usuario oferentePendiente = new Usuario();
-            oferentePendiente.setId("oferente2");
-            oferentePendiente.setCorreo("oferente2@test.com");
-            oferentePendiente.setClave(password);
-            oferentePendiente.setRolUsuario("OFERENTE");
-            oferentePendiente.setActivo(false); // Este oferente está pendiente
-            usuarioRepository.save(oferentePendiente);
-            System.out.println("Creado usuario: oferente2, rol: OFERENTE, clave: 123 (PENDIENTE)");
+            // --- 3. Empresa Pendiente ---
+            Usuario userEmpresaPendiente = new Usuario();
+            userEmpresaPendiente.setId("empresa2");
+            userEmpresaPendiente.setCorreo("empresa2@test.com");
+            userEmpresaPendiente.setClave(password);
+            userEmpresaPendiente.setRolUsuario("EMPRESA");
+            userEmpresaPendiente.setActivo(false);
 
+            Empresa empresaPendiente = new Empresa();
+            empresaPendiente.setNombre("Innovatec");
+            empresaPendiente.setAprobado(false);
+
+            // Vinculamos en ambas direcciones
+            userEmpresaPendiente.setEmpresa(empresaPendiente);
+            empresaPendiente.setUsuario(userEmpresaPendiente);
+
+            usuarioRepository.save(userEmpresaPendiente); // Solo guardamos el usuario
+            System.out.println("Creada empresa pendiente: empresa2");
+
+            // --- 4. Oferente Pendiente ---
+            Usuario userOferentePendiente = new Usuario();
+            userOferentePendiente.setId("oferente2");
+            userOferentePendiente.setCorreo("oferente2@test.com");
+            userOferentePendiente.setClave(password);
+            userOferentePendiente.setRolUsuario("OFERENTE");
+            userOferentePendiente.setActivo(false);
+
+            Oferente oferentePendiente = new Oferente();
+            oferentePendiente.setNombre("Carlos Rojas");
+            oferentePendiente.setAprobado(false);
+
+            // Vinculamos en ambas direcciones
+            userOferentePendiente.setOferente(oferentePendiente);
+            oferentePendiente.setUsuario(userOferentePendiente);
+
+            usuarioRepository.save(userOferentePendiente); // Solo guardamos el usuario
+            System.out.println("Creado oferente pendiente: oferente2");
 
             System.out.println("Datos de prueba cargados exitosamente.");
         } else {
-            System.out.println("La base de datos ya contiene datos, no se cargaron datos de prueba.");
+            System.out.println("La base de datos ya contiene datos.");
         }
     }
 }
