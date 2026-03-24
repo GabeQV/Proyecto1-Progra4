@@ -26,7 +26,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/", "/login", "/registro-empresa", "/registro-oferente", "/css/**", "/js/**", "/images/**").permitAll()
+                        .requestMatchers("/", "/login", "/registro-empresa", "/RegistroOferente", "/css/**", "/js/**", "/images/**","/SaveOfer").permitAll()
                         // ------ AÑADIR REGLAS PARA LOS NUEVOS DASHBOARDS ------
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/empresa/**").hasRole("EMPRESA")
