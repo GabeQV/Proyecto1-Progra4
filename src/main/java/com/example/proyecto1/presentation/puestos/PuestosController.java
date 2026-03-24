@@ -59,16 +59,17 @@ public class PuestosController {
             @RequestParam List<Integer> niveles,
             Principal principal) {
 
-        Puesto puesto = service.crearPuesto(principal.getName(), descripcion, salario, tipoPuesto);
+        Puesto puesto = service.crearPuesto(
+                principal.getName(), descripcion, salario, tipoPuesto);
 
         for (int i = 0; i < idCaracteristicas.size(); i++) {
-            service.agregarCaracteristicaAPuesto(
-                    puesto.getId(),
-                    idCaracteristicas.get(i),
-                    niveles.get(i)
-            );
+            if (niveles.get(i) > 0) {   // <-- solo guardar si hay nivel real
+                service.agregarCaracteristicaAPuesto(
+                        puesto.getId(),
+                        idCaracteristicas.get(i),
+                        niveles.get(i));
+            }
         }
-
         return "redirect:/empresa/puestos";
     }
 }

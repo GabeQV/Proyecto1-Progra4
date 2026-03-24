@@ -14,24 +14,22 @@ import java.security.Principal;
 public class AdminController {
 
     private final Service service;
-    private final UsuarioRepository usuarioRepository;
 
     @Autowired
     public AdminController(Service service, UsuarioRepository usuarioRepository) {
         this.service = service;
-        this.usuarioRepository = usuarioRepository;
     }
 
     @GetMapping("/dashboard")
     public String showDashboard(Model model, Principal principal) {
-        Usuario admin = usuarioRepository.findById(principal.getName()).orElse(null);
+        Usuario admin = service.buscarUsuarioPorId(principal.getName()).orElse(null);
         model.addAttribute("adminEmail", admin != null ? admin.getCorreo() : "No encontrado");
         return "admin/dashboard";
     }
 
     @GetMapping("/empresas-pendientes")
     public String showEmpresasPendientes(Model model, Principal principal) {
-        Usuario admin = usuarioRepository.findById(principal.getName()).orElse(null);
+        Usuario admin = service.buscarUsuarioPorId(principal.getName()).orElse(null);
         model.addAttribute("adminEmail", admin != null ? admin.getCorreo() : "No encontrado");
         model.addAttribute("empresas", service.obtenerEmpresasPendientes());
         return "admin/empresas-pendientes";
@@ -45,7 +43,7 @@ public class AdminController {
 
     @GetMapping("/oferentes-pendientes")
     public String showOferentesPendientes(Model model, Principal principal) {
-        Usuario admin = usuarioRepository.findById(principal.getName()).orElse(null);
+        Usuario admin = service.buscarUsuarioPorId(principal.getName()).orElse(null);
         model.addAttribute("adminEmail", admin != null ? admin.getCorreo() : "No encontrado");
         model.addAttribute("oferentes", service.obtenerOferentesPendientes());
         return "admin/oferentes-pendientes";

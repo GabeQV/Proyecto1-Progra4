@@ -142,13 +142,7 @@ public class Service {
     // ── HABILIDADES OFERENTE ──────────────────────────────────────────────────
 
     public List<OferenteHabilidad> obtenerHabilidadesDeOferente(String idOferente) {
-        List<OferenteHabilidad> misHabilidades = new ArrayList<>();
-        oferenteHabilidadRepository.findAll().forEach(h -> {
-            if (h.getIdOferente().getId().equals(idOferente)) {
-                misHabilidades.add(h);
-            }
-        });
-        return misHabilidades;
+        return oferenteHabilidadRepository.findByIdOferente_Id(idOferente);
     }
 
     @Transactional

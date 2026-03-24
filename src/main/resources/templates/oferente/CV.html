@@ -104,8 +104,10 @@
                         <a th:href="@{/oferente/CV/descargar}" class="btn btn-outline-primary btn-sm">⬇ Descargar</a>
                         <form th:action="@{/oferente/CV/eliminar}" method="post" class="mb-0">
                             <button type="submit" class="btn btn-outline-danger btn-sm"
-                                    onclick="return confirm('¿Eliminar el CV actual?')">
-                                🗑 Eliminar
+                            <!-- BIEN — sin JS, solo el form POST -->
+                                <form th:action="@{/oferente/CV/eliminar}" method="post" class="mb-0">
+                                <button type="submit" class="btn btn-danger btn-sm">Eliminar CV</button>
+                                </form>                                🗑 Eliminar
                             </button>
                         </form>
                     </div>
