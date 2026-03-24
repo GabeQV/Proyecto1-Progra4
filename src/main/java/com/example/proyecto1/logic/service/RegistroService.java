@@ -44,7 +44,6 @@ public class RegistroService {
         usuario.setClave(passwordEncoder.encode(clave));
         usuario.setRolUsuario("OFERENTE");
         usuario.setActivo(false);
-        usuarioRepo.save(usuario);
 
         Oferente oferente = new Oferente();
         oferente.setUsuario(usuario);
@@ -55,6 +54,7 @@ public class RegistroService {
         oferente.setTelefono(telefono);
         oferente.setResidencia(residencia);
         oferente.setAprobado(false);
+
         oferenteRepo.save(oferente);
     }
 
@@ -65,9 +65,9 @@ public class RegistroService {
             oferente.setAprobado(true);
 
             Usuario usuario = oferente.getUsuario();
-            usuario.setActivo(true);  // ahora puede loguearse
+            usuario.setActivo(true);
 
-            usuarioRepo.save(usuario); // cascade actualiza el oferente también
+            usuarioRepo.save(usuario);
         });
     }
 
