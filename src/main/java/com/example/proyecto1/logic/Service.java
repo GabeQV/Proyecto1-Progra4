@@ -9,6 +9,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -95,22 +99,24 @@ public class Service {
         Oferente oferente = oferenteRepo.findById(idOferente)
                 .orElseThrow(() -> new IllegalArgumentException("Oferente no encontrado."));
 
+        // Convertir a ruta absoluta desde el directorio de trabajo real del proyecto
+        Path dirPath = Paths.get(uploadDir).toAbsolutePath().normalize();
+        Files.createDirectories(dirPath);
+
         // Borrar archivo físico anterior si existía
         if (oferente.getCvRuta() != null) {
-            java.nio.file.Files.deleteIfExists(
-                    java.nio.file.Paths.get(uploadDir).resolve(oferente.getCvRuta())
-            );
+            Files.deleteIfExists(dirPath.resolve(oferente.getCvRuta()));
         }
-
-        // Crear directorio si no existe
-        java.nio.file.Path dirPath = java.nio.file.Paths.get(uploadDir);
-        java.nio.file.Files.createDirectories(dirPath);
 
         // Nombre único: idOferente_timestamp.pdf
         String nombreArchivo = idOferente + "_" + System.currentTimeMillis() + ".pdf";
-        archivo.transferTo(dirPath.resolve(nombreArchivo).toFile());
+        Path destino = dirPath.resolve(nombreArchivo);
 
-        // Solo guardamos el nombre del archivo en cvRuta
+        // Files.copy con el InputStream evita el problema de transferTo en Tomcat
+        try (var inputStream = archivo.getInputStream()) {
+            Files.copy(inputStream, destino, StandardCopyOption.REPLACE_EXISTING);
+        }
+
         oferente.setCvRuta(nombreArchivo);
         oferenteRepo.save(oferente);
     }
@@ -124,9 +130,8 @@ public class Service {
                 .orElseThrow(() -> new IllegalArgumentException("Oferente no encontrado."));
 
         if (oferente.getCvRuta() != null) {
-            java.nio.file.Files.deleteIfExists(
-                    java.nio.file.Paths.get(uploadDir).resolve(oferente.getCvRuta())
-            );
+            Path dirPath = Paths.get(uploadDir).toAbsolutePath().normalize();
+            Files.deleteIfExists(dirPath.resolve(oferente.getCvRuta()));
             oferente.setCvRuta(null);
             oferenteRepo.save(oferente);
         }

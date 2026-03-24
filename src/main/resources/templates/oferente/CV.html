@@ -144,11 +144,7 @@
                 </h6>
 
                 <form th:action="@{/oferente/CV/subir}" method="post" enctype="multipart/form-data">
-                    <label for="archivoCV" class="upload-zone d-block mb-3">
-                        <span class="upload-icon">📂</span>
-                        <p class="mb-1 fw-semibold">Seleccioná o arrastrá tu CV aquí</p>
-                        <p class="text-muted small mb-0">Solo archivos PDF · Máximo 5 MB</p>
-                    </label>
+
                     <input type="file" id="archivoCV" name="archivo"
                            accept="application/pdf"
                            class="form-control form-control-sm mb-3" required />

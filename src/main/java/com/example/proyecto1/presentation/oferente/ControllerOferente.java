@@ -103,8 +103,12 @@ public class ControllerOferente {
                 return ResponseEntity.notFound().build();
             }
 
-            // cvRuta guarda el nombre del archivo; se combina con uploadDir para la ruta física
-            Path rutaArchivo = Paths.get(uploadDir).resolve(oferente.getCvRuta());
+            // Usar ruta absoluta igual que en guardarCV
+            Path rutaArchivo = Paths.get(uploadDir)
+                    .toAbsolutePath()
+                    .normalize()
+                    .resolve(oferente.getCvRuta());
+
             Resource resource = new UrlResource(rutaArchivo.toUri());
 
             if (!resource.exists() || !resource.isReadable()) {
