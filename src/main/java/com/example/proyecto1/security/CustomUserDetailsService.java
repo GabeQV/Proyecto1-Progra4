@@ -23,22 +23,26 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     @Transactional(readOnly = true)
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Usuario usuario = usuarioRepository.findById(username)
-                .orElseThrow(() -> new UsernameNotFoundException("No se encontró el usuario: " + username));
+    public UserDetails loadUserByUsername(String correo) throws UsernameNotFoundException {
+        // Buscar por correo (login con correo)
+        Usuario usuario = usuarioRepository.findByCorreo(correo)
+                .orElseThrow(() -> new UsernameNotFoundException("No se encontró el usuario con correo: " + correo));
 
         Set<GrantedAuthority> authorities = new HashSet<>();
         authorities.add(new SimpleGrantedAuthority("ROLE_" + usuario.getRolUsuario()));
 
         boolean accountNonLocked = usuario.getActivo() != null && usuario.getActivo();
 
+        // IMPORTANTE: el primer parámetro es el ID (cédula), no el correo.
+        // Así principal.getName() en los controllers devuelve el id,
+        // y findById() en guardarCV/dashboard sigue funcionando sin cambios.
         return new User(
                 usuario.getId(),
                 usuario.getClave(),
-                true, // enabled
-                true, // accountNonExpired
-                true, // credentialsNonExpired
-                accountNonLocked, // accountNonLocked
+                true,
+                true,
+                true,
+                accountNonLocked,
                 authorities
         );
     }

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Empresa - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { display: flex; flex-direction: column; min-height: 100vh; }
+    </style>
+</head>
+<body>
+
+<!-- ── NAVBAR ──────────────────────────────────────────── -->
+<header class="bg-dark text-white p-3">
+    <div class="container d-flex justify-content-between align-items-center">
+
+        <div class="d-flex align-items-center">
+            <h4 class="me-4 mb-0">BolsaEmpleo</h4>
+            <nav>
+                <a th:href="@{/oferente/dashboard}"
+                   class="text-white me-3 text-decoration-none fw-bold">
+                    Dashboard
+                </a>
+                <a th:href="@{/oferente/habilidad}"
+                   class="text-white-50 me-3 text-decoration-none">
+                    Mis Habilidades
+                </a>
+                <a th:href="@{/oferente/CV}"
+                   class="text-white-50 text-decoration-none">
+                    Mi CV
+                </a>
+            </nav>
+        </div>
+
+        <div class="d-flex align-items-center">
+            <span class="me-3" th:text="${oferente.nombre}">Nombre oferente</span>
+            <form th:action="@{/logout}" method="post" class="mb-0">
+                <button type="submit" class="btn btn-outline-light btn-sm">Salir</button>
+            </form>
+        </div>
+
+    </div>
+</header>
+
+<!-- ── CONTENIDO ───────────────────────────────────────── -->
+<div class="container mt-5 flex-grow-1">
+    <div class="bg-light p-5 rounded">
+
+        <h1>Oferente - Dashboard</h1>
+
+        <!-- Muestra el nombre de la empresa logueada -->
+        <p class="lead">
+            Bienvenido, <strong th:text="${oferente.nombre}">Oferente</strong>.
+            Desde aquí podés administrar tus Habilidades y subir tu CV.
+        </p>
+
+        <div class="mt-4">
+            <a th:href="@{/oferente/habilidad}"
+               class="btn btn-primary me-2">
+                Ver mis habilidades
+            </a>
+            <a th:href="@{/oferente/CV}"
+               class="btn btn-success">
+                Publicar CV
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<!-- ── FOOTER ──────────────────────────────────────────── -->
+<footer class="bg-dark text-white p-3 mt-auto text-center">
+    <div class="container">
+        <span class="me-3">Bolsa de Empleo - Total Soft Inc.</span> |
+        <span class="mx-3">Contacto: info@bolsaempleo.local</span> |
+        <span class="ms-3">Créditos: Equipo de desarrollo</span>
+    </div>
+</footer>
+
+</body>
+</html>
+
