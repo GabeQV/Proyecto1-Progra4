@@ -1,10 +1,6 @@
-
 package com.example.proyecto1.logic;
 
-import com.example.proyecto1.data.EmpresaRepository;
-import com.example.proyecto1.data.OferenteRepository;
-import com.example.proyecto1.data.PuestoRepository;
-import com.example.proyecto1.data.UsuarioRepository;
+import com.example.proyecto1.data.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,24 +11,27 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @org.springframework.stereotype.Service
 public class Service {
 
 
     private final UsuarioRepository usuarioRepo;
-    private PuestoRepository puestoRepository;
+    private final PuestoRepository puestoRepository;
     private final OferenteRepository oferenteRepo;
     private final EmpresaRepository empresaRepo;
     private final PasswordEncoder passwordEncoder;
+    private final CaracteristicaRepository caracteristicaRepository;
 
 
-    public Service(UsuarioRepository ur, OferenteRepository or, EmpresaRepository er, PasswordEncoder pe, PuestoRepository po) {
+    public Service(UsuarioRepository ur, OferenteRepository or, EmpresaRepository er, PasswordEncoder pe, PuestoRepository po, CaracteristicaRepository cr) {
         this.usuarioRepo = ur;
         this.oferenteRepo = or;
         this.empresaRepo = er;
         this.passwordEncoder = pe;
-        this.puestoRepository= po;
+        this.puestoRepository = po;
+        this.caracteristicaRepository = cr;
     }
 
 
@@ -138,8 +137,6 @@ public class Service {
     }
 
 
-
-
     public List<Oferente> obtenerOferentesPendientes() {
         return oferenteRepo.findByAprobadoFalse();
     }
@@ -149,9 +146,7 @@ public class Service {
     }
 
 
-    //----------------------------------------------------------------------------------------------//
-    //EMPRESA //
-
+    ///-----------------------------EMPRESA-----------------------------------------------------------------///
 
     @Transactional
     public void registrarEmpresa(String id, String correo, String clave, String nombre, String localizacion, String telefono, String descripcion) {
@@ -199,8 +194,7 @@ public class Service {
     }
 
 
-    //--------------------------------------------------------------------------------------------//
-    //Puestos//
+    ///-----------------------------PUESTOS-----------------------------------------------------------------///
 
 
     public List<Puesto> getPuestosDeEmpresa(String idEmpresa) {
@@ -231,31 +225,31 @@ public class Service {
         puesto.setFechaRegistro(LocalDate.now());
 
         return puestoRepository.save(puesto);
+    }
 
 
-//    // Agregar característica con nivel al puesto recién creado
-//    @Transactional
-//    public void agregarCaracteristica(Integer idPuesto,
-//                                      Integer idCaracteristica,
-//                                      Integer nivel) {
-//
-//        Puesto puesto = puestoRepository.findById(idPuesto)
-//                .orElseThrow(() -> new IllegalArgumentException("Puesto no encontrado."));
-//
-//        Caracteristica caracteristica = caracteristicaRepo.findById(idCaracteristica)
-//                .orElseThrow(() -> new IllegalArgumentException("Característica no encontrada."));
-//
-//        PuestoCaracteristicaId pk = new PuestoCaracteristicaId();
-//        pk.setIdPuesto(idPuesto);
-//        pk.setIdCaracteristica(idCaracteristica);
-//
-//        PuestoCaracteristica pc = new PuestoCaracteristica();
-//        pc.setId(pk);
-//        pc.setIdPuesto(puesto);
-//        pc.setIdCaracteristica(caracteristica);
-//        pc.setNivelRequerido(nivel);
-//
-//        pcRepo.save(pc);
-//    }
+    // Agregar característica con nivel al puesto recién creado
+
+    public void agregarCaracteristica(Integer idPuesto, Integer idCaracteristica, Integer nivel) {
+
+        Puesto puesto = puestoRepository.findById(idPuesto).orElse(null);
+        if(puesto==null){
+            throw new IllegalArgumentException("Puesto no encontrado.");
+        }
+
+        Caracteristica caracteristica = caracteristicaRepository.findById(idCaracteristica)
+                .orElseThrow(() -> new IllegalArgumentException("Característica no encontrada."));
+
+        PuestoCaracteristicaId pk = new PuestoCaracteristicaId();
+        pk.setIdPuesto(idPuesto);
+        pk.setIdCaracteristica(idCaracteristica);
+
+        PuestoCaracteristica pc = new PuestoCaracteristica();
+        pc.setId(pk);
+        pc.setIdPuesto(puesto);
+        pc.setIdCaracteristica(caracteristica);
+        pc.setNivelRequerido(nivel);
+
+        puestoRepository.save(pc.getIdPuesto());
     }
 }

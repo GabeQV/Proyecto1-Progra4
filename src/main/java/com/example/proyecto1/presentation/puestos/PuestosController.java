@@ -1,8 +1,8 @@
 package com.example.proyecto1.presentation.puestos;
 
-import com.example.proyecto1.logic.Empresa;
-import com.example.proyecto1.logic.Puesto;
-import com.example.proyecto1.logic.Service;
+import com.example.proyecto1.data.CaracteristicaRepository;
+import com.example.proyecto1.data.PuestoCaracteristicaRepository;
+import com.example.proyecto1.logic.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,8 +15,10 @@ import java.util.List;
 public class PuestosController {
 
     private final Service service;
+    private final CaracteristicaRepository caracteristicaRepository;
 
-    public PuestosController(Service service) {
+    public PuestosController(Service service,CaracteristicaRepository caracteristicaRepository) {
+        this.caracteristicaRepository=caracteristicaRepository;
         this.service  = service;
     }
 
@@ -31,50 +33,43 @@ public class PuestosController {
         return "puestos/puestos";
     }
 
-    // POST /empresa/puestos/{id}/desactivar
     @PostMapping("/{id}/desactivar")
     public String desactivar(@PathVariable Integer id) {
         service.desactivar(id);
         return "redirect:/empresa/puestos";
     }
-//    @GetMapping("/nuevo")
-//    public String mostrarFormulario(Model model, Principal principal) {
-//
-//        Empresa empresa = empresaService.buscarPorId(principal.getName());
-//
-//        // Necesitás la lista de características para el dropdown
-//        // La pedís al CaracteristicaService de tu compañero
-//        // Por ahora la dejás vacía hasta que él la tenga lista
-//        //List<Caracteristica> caracteristicas = caracteristicaService.findAll();
-//
-//        model.addAttribute("empresa",        empresa);
-//        model.addAttribute("caracteristicas", caracteristicas);
-//        return "puestos/nuevo-puesto";
-//    }
+    @GetMapping("/nuevo")
+    public String mostrarFormulario(Model model, Principal principal) {
 
-//    @PostMapping("/nuevo")
-//    public String guardarPuesto(
-//            @RequestParam String descripcion,
-//            @RequestParam Double salario,
-//            @RequestParam String tipoPuesto,
-//            @RequestParam List<Integer> idCaracteristicas,
-//            @RequestParam List<Integer> niveles,
-//            Principal principal) {
-//
-//        // 1. Crear el puesto y obtener su ID generado
-//        Puesto puesto = puestoService.crearPuesto(
-//                principal.getName(), descripcion, salario, tipoPuesto
-//        );
-//
-//        // 2. Agregar cada característica con su nivel
-//        for (int i = 0; i < idCaracteristicas.size(); i++) {
-//            puestoService.agregarCaracteristica(
-//                    puesto.getId(),
-//                    idCaracteristicas.get(i),
-//                    niveles.get(i)
-//            );
-//        }
-//
-//        return "redirect:/empresa/puestos";
-//    }
+        Empresa empresa = service.buscarPorIdEmp(principal.getName());
+        List<Caracteristica> caracteristicas = caracteristicaRepository.findAll();
+
+        model.addAttribute("empresa",        empresa);
+        model.addAttribute("caracteristicas", caracteristicas);
+        return "puestos/nuevo-puesto";
+    }
+
+    @PostMapping("/nuevo")
+    public String guardarPuesto(
+            @RequestParam String descripcion,
+            @RequestParam Double salario,
+            @RequestParam String tipoPuesto,
+            @RequestParam List<Integer> idCaracteristicas,
+            @RequestParam List<Integer> niveles,
+            Principal principal) {
+
+        // 1. Crear el puesto y obtener su ID generado
+        Puesto puesto = service.crearPuesto(principal.getName(), descripcion, salario, tipoPuesto);
+
+        // 2. Agregar cada característica con su nivel
+        for (int i = 0; i < idCaracteristicas.size(); i++) {
+            service.agregarCaracteristica(
+                    puesto.getId(),
+                    idCaracteristicas.get(i),
+                    niveles.get(i)
+            );
+        }
+
+        return "redirect:/empresa/puestos";
+    }
 }

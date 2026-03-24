@@ -1,6 +1,8 @@
 package com.example.proyecto1.dev;
 
+import com.example.proyecto1.data.CaracteristicaRepository;
 import com.example.proyecto1.data.UsuarioRepository;
+import com.example.proyecto1.logic.Caracteristica;
 import com.example.proyecto1.logic.Empresa;
 import com.example.proyecto1.logic.Oferente;
 import com.example.proyecto1.logic.Usuario;
@@ -14,6 +16,9 @@ public class DataLoader implements CommandLineRunner {
 
     @Autowired
     private UsuarioRepository usuarioRepository;
+
+    @Autowired
+    private CaracteristicaRepository caracteristicaRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -93,6 +98,19 @@ public class DataLoader implements CommandLineRunner {
 
             usuarioRepository.save(userOferentePendiente); // Solo guardamos el usuario
             System.out.println("Creado oferente pendiente: oferente2");
+
+            //--- 5. Características ---
+            Caracteristica car1 = new Caracteristica();
+            car1.setNombre("Java");
+            caracteristicaRepository.save(car1);
+
+            Caracteristica car2 = new Caracteristica();
+            car2.setNombre("Python");
+            caracteristicaRepository.save(car2);
+
+            Caracteristica car3 = new Caracteristica();
+            car3.setNombre("Spring");
+            caracteristicaRepository.save(car3);
 
             System.out.println("Datos de prueba cargados exitosamente.");
         } else {

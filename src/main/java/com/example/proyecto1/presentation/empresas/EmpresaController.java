@@ -5,11 +5,11 @@ import com.example.proyecto1.logic.Service;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.security.Principal;
 
 @Controller
-@RequestMapping("/empresa")
 public class EmpresaController {
 
     private final Service service;
@@ -19,13 +19,39 @@ public class EmpresaController {
     }
 
 
-    @GetMapping("/dashboard")
+    @GetMapping("/empresa/dashboard")
     public String dashboard(Model model, Principal principal) {
 
         Empresa empresa = service.buscarPorIdEmp(principal.getName());
 
         model.addAttribute("empresa", empresa);
         return "empresas/dashboard";
+    }
+    @GetMapping("/RegistroEmpresa")
+    public String Ofer_register() {
+        return "registro/registro-empresa";
+    }
+
+    @PostMapping("/SaveEmpresa")
+    public String registrar(
+            @RequestParam String id,
+            @RequestParam String nombre,
+            @RequestParam String localizacion,
+            @RequestParam String correoElectronico,
+            @RequestParam String telefono,
+            @RequestParam String descripcion,
+            @RequestParam String clave,
+            RedirectAttributes redirectAttrs) {
+        try {
+            service.registrarEmpresa(id,correoElectronico,clave, nombre, localizacion,
+                    telefono, descripcion);
+            redirectAttrs.addFlashAttribute("exito",
+                    "Registro exitoso. Tu cuenta está pendiente de aprobación.");
+            return "redirect:registro/registro-empresa";
+        } catch (IllegalArgumentException e) {
+            redirectAttrs.addFlashAttribute("error", e.getMessage());
+            return "redirect:registro/registro-empresa";
+        }
     }
 
 }

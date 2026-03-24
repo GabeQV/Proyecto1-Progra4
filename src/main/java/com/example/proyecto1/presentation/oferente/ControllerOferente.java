@@ -34,7 +34,7 @@ public class ControllerOferente {
     // ── Registro ─────────────────────────────────────────────────────────────
     @GetMapping("/RegistroOferente")
     public String Ofer_register() {
-        return "registro-oferente/regist-oferente";
+        return "registro/regist-oferente";
     }
 
     @PostMapping("/SaveOfer")

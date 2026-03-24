@@ -65,17 +65,20 @@
             <label class="form-label">Características requeridas</label>
 
             <!-- Una fila por característica -->
-            <div class="row g-2 mb-2"
+            <div class="row g-2 mb-2 border p-2 rounded"
                  th:each="c : ${caracteristicas}">
 
                 <div class="col-md-6">
-                    <!-- Nombre visible al usuario -->
-                    <input type="text" class="form-control"
-                           th:value="${c.nombre}" readonly/>
-                    <!-- ID que viaja al Controller -->
-                    <input type="hidden"
-                           name="idCaracteristicas"
-                           th:value="${c.id}"/>
+                    <div class="form-check">
+                        <input class="form-check-input"
+                               type="checkbox"
+                               name="idCaracteristicas"
+                               th:value="${c.id}"
+                               th:id="'car-' + ${c.id}"/>
+                        <label class="form-check-label" 
+                               th:for="'car-' + ${c.id}"
+                               th:text="${c.nombre}"></label>
+                    </div>
                 </div>
 
                 <div class="col-md-6">

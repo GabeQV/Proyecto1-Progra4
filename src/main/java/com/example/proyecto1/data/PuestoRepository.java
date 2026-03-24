@@ -13,6 +13,9 @@ public interface PuestoRepository extends CrudRepository<Puesto,Integer> {
 
     List<Puesto> findTop5ByTipoPuestoAndActivoTrueOrderByFechaRegistroDesc(String tipoPuesto);
 
+
+
+
 }
 
 
