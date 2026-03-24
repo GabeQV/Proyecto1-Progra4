@@ -10,12 +10,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
+// Usamos la anotación con su paquete completo para evitar confusiones
 @org.springframework.stereotype.Service
 public class Service {
-
 
     private final UsuarioRepository usuarioRepo;
     private final PuestoRepository puestoRepository;
@@ -23,7 +24,6 @@ public class Service {
     private final EmpresaRepository empresaRepo;
     private final PasswordEncoder passwordEncoder;
     private final CaracteristicaRepository caracteristicaRepository;
-
 
     public Service(UsuarioRepository ur, OferenteRepository or, EmpresaRepository er, PasswordEncoder pe, PuestoRepository po, CaracteristicaRepository cr) {
         this.usuarioRepo = ur;
@@ -34,10 +34,12 @@ public class Service {
         this.caracteristicaRepository = cr;
     }
 
+    //================================================================================
+    // MÉTODOS DEL MÓDULO DE REGISTRO Y GESTIÓN DE USUARIOS
+    //================================================================================
 
     @Transactional
     public void registrarOferente(String id, String correo, String clave, String nombre, String primerApellido, String segundoApellido, String nacionalidad, String telefono, String residencia) {
-
         if (usuarioRepo.existsById(id)) {
             throw new IllegalArgumentException("Ya existe un usuario con esa identificación.");
         }
@@ -47,7 +49,7 @@ public class Service {
         usuario.setCorreo(correo);
         usuario.setClave(passwordEncoder.encode(clave));
         usuario.setRolUsuario("OFERENTE");
-        usuario.setActivo(false);
+        usuario.setActivo(false); // Requiere aprobación
 
         Oferente oferente = new Oferente();
         oferente.setUsuario(usuario);
@@ -62,22 +64,111 @@ public class Service {
         oferenteRepo.save(oferente);
     }
 
+    @Transactional
+    public void registrarEmpresa(String id, String correo, String clave, String nombre, String localizacion, String telefono, String descripcion) {
+        if (usuarioRepo.existsById(id)) {
+            throw new IllegalArgumentException("Ya existe un usuario con esa identificación.");
+        }
+        Usuario usuario = new Usuario();
+        usuario.setId(id);
+        usuario.setCorreo(correo);
+        usuario.setClave(passwordEncoder.encode(clave));
+        usuario.setRolUsuario("EMPRESA");
+        usuario.setActivo(false);
+
+        Empresa empresa = new Empresa();
+        empresa.setUsuario(usuario);
+        empresa.setNombre(nombre);
+        empresa.setLocalizacion(localizacion);
+        empresa.setTelefono(telefono);
+        empresa.setDescripcion(descripcion);
+        empresa.setAprobado(false);
+        empresaRepo.save(empresa);
+    }
+
+    //================================================================================
+    // MÉTODOS DEL MÓDULO DE ADMINISTRADOR
+    //================================================================================
+
+    // --- Métodos para Aprobaciones ---
+
+    public List<Empresa> obtenerEmpresasPendientes() {
+        return empresaRepo.findByAprobadoFalse();
+    }
+
+    public List<Oferente> obtenerOferentesPendientes() {
+        return oferenteRepo.findByAprobadoFalse();
+    }
+
+    @Transactional
+    public void aprobarEmpresa(String id) {
+        empresaRepo.findById(id).ifPresent(empresa -> {
+            empresa.setAprobado(true);
+            Usuario usuario = empresa.getUsuario();
+            if (usuario != null) {
+                usuario.setActivo(true);
+                usuarioRepo.save(usuario);
+            }
+        });
+    }
 
     @Transactional
     public void aprobarOferente(String id) {
         oferenteRepo.findById(id).ifPresent(oferente -> {
             oferente.setAprobado(true);
-
             Usuario usuario = oferente.getUsuario();
-            usuario.setActivo(true);
-
-            usuarioRepo.save(usuario);
+            if (usuario != null) {
+                usuario.setActivo(true);
+                usuarioRepo.save(usuario);
+            }
         });
     }
 
+    // --- Métodos para Características ---
+
+    public Caracteristica getCaracteristica(Integer id) {
+        return caracteristicaRepository.findById(id).orElse(null);
+    }
+
+    public List<Caracteristica> getAllCaracteristicas() {
+        return caracteristicaRepository.findAll();
+    }
+
+    public List<Caracteristica> getCaracteristicasRaiz() {
+        return caracteristicaRepository.findByIdPadreIsNull();
+    }
+
+    public List<Caracteristica> getSubCaracteristicas(Integer padreId) {
+        return caracteristicaRepository.findByIdPadre_Id(padreId);
+    }
+
+    public List<Caracteristica> getBreadcrumbs(Integer actualId) {
+        if (actualId == null) {
+            return new ArrayList<>();
+        }
+        List<Caracteristica> breadcrumbs = new ArrayList<>();
+        Caracteristica actual = getCaracteristica(actualId);
+        while (actual != null) {
+            breadcrumbs.add(actual);
+            actual = actual.getIdPadre();
+        }
+        Collections.reverse(breadcrumbs);
+        return breadcrumbs;
+    }
+
+    @Transactional
+    public void addCaracteristica(Caracteristica nueva) {
+        caracteristicaRepository.save(nueva);
+    }
+
+
+    //================================================================================
+    // MÉTODOS DEL MÓDULO DE OFERENTE
+    //================================================================================
+
     public Oferente buscarPorIdOf(String id) {
         return oferenteRepo.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Empresa no encontrada."));
+                .orElseThrow(() -> new IllegalArgumentException("Oferente no encontrado."));
     }
 
     @Transactional
@@ -98,20 +189,16 @@ public class Service {
         Oferente oferente = oferenteRepo.findById(idOferente)
                 .orElseThrow(() -> new IllegalArgumentException("Oferente no encontrado."));
 
-        // Convertir a ruta absoluta desde el directorio de trabajo real del proyecto
         Path dirPath = Paths.get(uploadDir).toAbsolutePath().normalize();
         Files.createDirectories(dirPath);
 
-        // Borrar archivo físico anterior si existía
-        if (oferente.getCvRuta() != null) {
+        if (oferente.getCvRuta() != null && !oferente.getCvRuta().isEmpty()) {
             Files.deleteIfExists(dirPath.resolve(oferente.getCvRuta()));
         }
 
-        // Nombre único: idOferente_timestamp.pdf
         String nombreArchivo = idOferente + "_" + System.currentTimeMillis() + ".pdf";
         Path destino = dirPath.resolve(nombreArchivo);
 
-        // Files.copy con el InputStream evita el problema de transferTo en Tomcat
         try (var inputStream = archivo.getInputStream()) {
             Files.copy(inputStream, destino, StandardCopyOption.REPLACE_EXISTING);
         }
@@ -120,9 +207,6 @@ public class Service {
         oferenteRepo.save(oferente);
     }
 
-    /**
-     * Elimina el CV del oferente: borra el archivo físico y pone cvRuta en null.
-     */
     @Transactional
     public void eliminarCV(String idOferente, String uploadDir) throws java.io.IOException {
         Oferente oferente = oferenteRepo.findById(idOferente)
@@ -136,83 +220,21 @@ public class Service {
         }
     }
 
+    //================================================================================
+    // MÉTODOS DEL MÓDULO DE EMPRESA
+    //================================================================================
 
-    public List<Oferente> obtenerOferentesPendientes() {
-        return oferenteRepo.findByAprobadoFalse();
-    }
-
-    public List<Empresa> obtenerEmpresasPendientes() {
-        return empresaRepo.findByAprobadoFalse();
-    }
-
-
-    ///-----------------------------EMPRESA-----------------------------------------------------------------///
-
-    @Transactional
-    public void registrarEmpresa(String id, String correo, String clave, String nombre, String localizacion, String telefono, String descripcion) {
-        if (usuarioRepo.existsById(id)) {
-            throw new IllegalArgumentException("Ya existe un usuario con esa identificación.");
-        }
-        // Crear usuario base — igual que en registrarOferente
-        Usuario usuario = new Usuario();
-        usuario.setId(id);
-        usuario.setCorreo(correo);
-        usuario.setClave(passwordEncoder.encode(clave));
-        usuario.setRolUsuario("EMPRESA");
-        usuario.setActivo(false);  // espera aprobación del admin
-
-
-        // Crear empresa vinculada — igual que creás el Oferente
-        Empresa empresa = new Empresa();
-        empresa.setUsuario(usuario);
-        empresa.setNombre(nombre);
-        empresa.setLocalizacion(localizacion);
-        empresa.setTelefono(telefono);
-        empresa.setDescripcion(descripcion);
-        empresa.setAprobado(false);
-        empresaRepo.save(empresa);
-    }
-
-    // ── Aprobar empresa
-    @Transactional
-    public void aprobarEmpresa(String id) {
-        empresaRepo.findById(id).ifPresent(empresa -> {
-            empresa.setAprobado(true);
-
-            Usuario usuario = empresa.getUsuario();
-            usuario.setActivo(true);  // ahora puede loguearse
-
-            usuarioRepo.save(usuario);
-        });
-    }
-
-    // ── Buscar empresa del usuario logueado ───────────────────
-    // Lo usás en el dashboard para mostrar el nombre de la empresa
     public Empresa buscarPorIdEmp(String id) {
         return empresaRepo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Empresa no encontrada."));
     }
 
-
-    ///-----------------------------PUESTOS-----------------------------------------------------------------///
-
-
     public List<Puesto> getPuestosDeEmpresa(String idEmpresa) {
         return puestoRepository.findByIdEmpresa_Id(idEmpresa);
     }
 
-    @jakarta.transaction.Transactional
-    public void desactivar(Integer id) {
-        puestoRepository.findById(id).ifPresent(puesto -> {
-            puesto.setActivo(false);
-            puestoRepository.save(puesto);
-        });
-    }
-
-
-    //     Crear puesto nuevo
+    @Transactional
     public Puesto crearPuesto(String idEmpresa, String descripcion, Double salario, String tipoPuesto) {
-
         Empresa empresa = empresaRepo.findById(idEmpresa)
                 .orElseThrow(() -> new IllegalArgumentException("Empresa no encontrada."));
 
@@ -227,15 +249,18 @@ public class Service {
         return puestoRepository.save(puesto);
     }
 
+    @Transactional
+    public void desactivar(Integer id) {
+        puestoRepository.findById(id).ifPresent(puesto -> {
+            puesto.setActivo(false);
+            puestoRepository.save(puesto);
+        });
+    }
 
-    // Agregar característica con nivel al puesto recién creado
-
+    @Transactional
     public void agregarCaracteristica(Integer idPuesto, Integer idCaracteristica, Integer nivel) {
-
-        Puesto puesto = puestoRepository.findById(idPuesto).orElse(null);
-        if(puesto==null){
-            throw new IllegalArgumentException("Puesto no encontrado.");
-        }
+        Puesto puesto = puestoRepository.findById(idPuesto)
+                .orElseThrow(() -> new IllegalArgumentException("Puesto no encontrado."));
 
         Caracteristica caracteristica = caracteristicaRepository.findById(idCaracteristica)
                 .orElseThrow(() -> new IllegalArgumentException("Característica no encontrada."));
@@ -248,8 +273,7 @@ public class Service {
         pc.setId(pk);
         pc.setIdPuesto(puesto);
         pc.setIdCaracteristica(caracteristica);
-        pc.setNivelRequerido(nivel);
+        pc.setNivelRequerido( nivel != null ? nivel : 1);
 
-        puestoRepository.save(pc.getIdPuesto());
     }
 }

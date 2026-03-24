@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -16,18 +17,26 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class CaracteristicasController {
 
+    private final Service service;
+    private final UsuarioRepository usuarioRepository;
+    private final OferenteHabilidadRepository oferenteHabilidadRepository;
+    private final OferenteRepository oferenteRepository;
+    private final CaracteristicaRepository caracteristicaRepository;
+
     @Autowired
-    private CaracteristicaRepository caracteristicaRepository;
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-    @Autowired
-    private OferenteHabilidadRepository oferenteHabilidadRepository;
-    @Autowired
-    private OferenteRepository oferenteRepository;
+    public CaracteristicasController(Service service, UsuarioRepository usuarioRepository, OferenteHabilidadRepository oferenteHabilidadRepository, OferenteRepository oferenteRepository, CaracteristicaRepository caracteristicaRepository) {
+        this.service = service;
+        this.usuarioRepository = usuarioRepository;
+        this.oferenteHabilidadRepository = oferenteHabilidadRepository;
+        this.oferenteRepository = oferenteRepository;
+        this.caracteristicaRepository = caracteristicaRepository;
+    }
+
 
     // ── ADMIN ──────────────────────────────────────────────────────────────
 
@@ -40,43 +49,32 @@ public class CaracteristicasController {
         Usuario admin = usuarioRepository.findById(principal.getName()).orElse(null);
         model.addAttribute("adminEmail", admin != null ? admin.getCorreo() : "No encontrado");
 
-        List<Caracteristica> subCategorias;
-        List<Caracteristica> breadcrumbs = new ArrayList<>();
-
         if (actualId == null) {
-            subCategorias = caracteristicaRepository.findByIdPadreIsNull();
+            model.addAttribute("subCategorias", service.getCaracteristicasRaiz());
             model.addAttribute("titulo", "Categorías: raíces");
         } else {
-            subCategorias = caracteristicaRepository.findByIdPadre_Id(actualId);
-            Caracteristica actual = caracteristicaRepository.findById(actualId).orElse(null);
+            model.addAttribute("subCategorias", service.getSubCaracteristicas(actualId));
+            Caracteristica actual = service.getCaracteristica(actualId);
             model.addAttribute("titulo", "Subcategorías de: " + (actual != null ? actual.getNombre() : ""));
-            while (actual != null) {
-                breadcrumbs.add(actual);
-                actual = actual.getIdPadre();
-            }
-            Collections.reverse(breadcrumbs);
         }
 
-        model.addAttribute("subCategorias", subCategorias);
-        model.addAttribute("breadcrumbs", breadcrumbs);
+        model.addAttribute("breadcrumbs", service.getBreadcrumbs(actualId));
         model.addAttribute("nuevaCaracteristica", new Caracteristica());
-        model.addAttribute("listaTodosPadres", caracteristicaRepository.findAll());
+        model.addAttribute("listaTodosPadres", service.getAllCaracteristicas());
 
         return "admin/caracteristicas";
     }
 
     @PostMapping("/admin/caracteristicas/agregar")
-    public String agregarCaracteristicaAdmin(
-            @RequestParam String nombre,
-            @RequestParam(required = false) Integer idPadre) {
-
-        Caracteristica nueva = new Caracteristica();
-        nueva.setNombre(nombre);
-        if (idPadre != null && idPadre != 0) {
-            Caracteristica padre = caracteristicaRepository.findById(idPadre).orElse(null);
-            nueva.setIdPadre(padre);
+    public String agregarCaracteristicaAdmin(@ModelAttribute Caracteristica nuevaCaracteristica) {
+        // La lógica de presentación (manejar el "0" del select) se queda en el controlador
+        if (nuevaCaracteristica.getIdPadre() != null && nuevaCaracteristica.getIdPadre().getId() == null) {
+            nuevaCaracteristica.setIdPadre(null);
+        } else if (nuevaCaracteristica.getIdPadre() != null && nuevaCaracteristica.getIdPadre().getId() == 0) {
+            nuevaCaracteristica.setIdPadre(null);
         }
-        caracteristicaRepository.save(nueva);
+
+        service.addCaracteristica(nuevaCaracteristica);
         return "redirect:/admin/caracteristicas";
     }
 
@@ -95,8 +93,8 @@ public class CaracteristicasController {
             oferenteHabilidadRepository
                     .findAll()
                     .forEach(h -> {
-                        if (h.getIdOferente().getId().equals(principal.getName())) {
-                            misHabilidades.add(h);
+                        if (((OferenteHabilidad) h).getIdOferente().getId().equals(principal.getName())) {
+                            misHabilidades.add((OferenteHabilidad) h);
                         }
                     });
         }
