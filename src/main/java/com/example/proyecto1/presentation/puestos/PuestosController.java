@@ -1,8 +1,9 @@
 package com.example.proyecto1.presentation.puestos;
 
-import com.example.proyecto1.data.CaracteristicaRepository;
-import com.example.proyecto1.data.PuestoCaracteristicaRepository;
-import com.example.proyecto1.logic.*;
+import com.example.proyecto1.logic.Empresa;
+import com.example.proyecto1.logic.Puesto;
+import com.example.proyecto1.logic.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -11,15 +12,14 @@ import java.security.Principal;
 import java.util.List;
 
 @Controller
-@RequestMapping("/empresa/puestos")  // ← base de todas las rutas de puestos
+@RequestMapping("/empresa/puestos")
 public class PuestosController {
 
     private final Service service;
-    private final CaracteristicaRepository caracteristicaRepository;
 
-    public PuestosController(Service service,CaracteristicaRepository caracteristicaRepository) {
-        this.caracteristicaRepository=caracteristicaRepository;
-        this.service  = service;
+    @Autowired
+    public PuestosController(Service service) {
+        this.service = service;
     }
 
     // GET /empresa/puestos
@@ -38,17 +38,18 @@ public class PuestosController {
         service.desactivar(id);
         return "redirect:/empresa/puestos";
     }
+
+    // GET /empresa/puestos/nuevo
     @GetMapping("/nuevo")
     public String mostrarFormulario(Model model, Principal principal) {
-
         Empresa empresa = service.buscarPorIdEmp(principal.getName());
-        List<Caracteristica> caracteristicas = caracteristicaRepository.findAll();
 
-        model.addAttribute("empresa",        empresa);
-        model.addAttribute("caracteristicas", caracteristicas);
+        model.addAttribute("empresa", empresa);
+        model.addAttribute("caracteristicas", service.getAllCaracteristicas());
         return "puestos/nuevo-puesto";
     }
 
+    // POST /empresa/puestos/nuevo
     @PostMapping("/nuevo")
     public String guardarPuesto(
             @RequestParam String descripcion,
@@ -58,12 +59,10 @@ public class PuestosController {
             @RequestParam List<Integer> niveles,
             Principal principal) {
 
-        // 1. Crear el puesto y obtener su ID generado
         Puesto puesto = service.crearPuesto(principal.getName(), descripcion, salario, tipoPuesto);
 
-        // 2. Agregar cada característica con su nivel
         for (int i = 0; i < idCaracteristicas.size(); i++) {
-            service.agregarCaracteristica(
+            service.agregarCaracteristicaAPuesto(
                     puesto.getId(),
                     idCaracteristicas.get(i),
                     niveles.get(i)
