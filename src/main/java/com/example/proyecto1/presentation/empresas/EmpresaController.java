@@ -28,7 +28,7 @@ public class EmpresaController {
         return "empresas/dashboard";
     }
     @GetMapping("/RegistroEmpresa")
-    public String Ofer_register() {
+    public String Emp_register() {
         return "registro/registro-empresa";
     }
 
@@ -37,20 +37,20 @@ public class EmpresaController {
             @RequestParam String id,
             @RequestParam String nombre,
             @RequestParam String localizacion,
-            @RequestParam String correoElectronico,
+            @RequestParam String correo,
             @RequestParam String telefono,
             @RequestParam String descripcion,
             @RequestParam String clave,
             RedirectAttributes redirectAttrs) {
         try {
-            service.registrarEmpresa(id,correoElectronico,clave, nombre, localizacion,
+            service.registrarEmpresa(id,correo,clave, nombre, localizacion,
                     telefono, descripcion);
             redirectAttrs.addFlashAttribute("exito",
                     "Registro exitoso. Tu cuenta está pendiente de aprobación.");
-            return "redirect:registro/registro-empresa";
+            return "redirect:/RegistroEmpresa";
         } catch (IllegalArgumentException e) {
             redirectAttrs.addFlashAttribute("error", e.getMessage());
-            return "redirect:registro/registro-empresa";
+            return "redirect:/RegistroEmpresa";
         }
     }
 

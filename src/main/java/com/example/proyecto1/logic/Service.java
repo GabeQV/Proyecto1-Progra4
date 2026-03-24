@@ -160,7 +160,7 @@ public class Service {
         usuario.setClave(passwordEncoder.encode(clave));
         usuario.setRolUsuario("EMPRESA");
         usuario.setActivo(false);  // espera aprobación del admin
-        usuarioRepo.save(usuario);
+
 
         // Crear empresa vinculada — igual que creás el Oferente
         Empresa empresa = new Empresa();

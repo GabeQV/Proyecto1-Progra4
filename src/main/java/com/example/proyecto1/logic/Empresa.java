@@ -16,7 +16,7 @@ public class Empresa {
     private String id;
 
     @MapsId
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @OneToOne(fetch = FetchType.LAZY, optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "id", nullable = false)
     private Usuario usuario;
 

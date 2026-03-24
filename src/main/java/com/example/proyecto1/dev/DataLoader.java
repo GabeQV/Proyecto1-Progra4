@@ -101,15 +101,15 @@ public class DataLoader implements CommandLineRunner {
 
             //--- 5. Características ---
             Caracteristica car1 = new Caracteristica();
-            car1.setNombre("Java");
+            car1.setNombre("Porgramacion");
             caracteristicaRepository.save(car1);
 
             Caracteristica car2 = new Caracteristica();
-            car2.setNombre("Python");
+            car2.setNombre("Bases de datos");
             caracteristicaRepository.save(car2);
 
             Caracteristica car3 = new Caracteristica();
-            car3.setNombre("Spring");
+            car3.setNombre("Vista");
             caracteristicaRepository.save(car3);
 
             System.out.println("Datos de prueba cargados exitosamente.");

@@ -42,7 +42,7 @@
                 <span th:text="${error}"></span>
             </div>
 
-            <form th:action="@{/SaveOfer}" method="post">
+            <form th:action="@{/SaveEmpresa}" method="post">
 
                 <p class="text-secondary mb-2">DATOS DE EMPRESA</p>
 
@@ -71,7 +71,7 @@
                 <div class="mb-3">
                     <label class="form-label">Correo electrónico</label>
                     <input type="email" class="form-control"
-                           name="correoElectronico" required>
+                           name="correo" required>
                 </div>
 
                 <!-- Teléfono -->
