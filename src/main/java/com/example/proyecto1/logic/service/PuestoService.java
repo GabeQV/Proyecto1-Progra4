@@ -52,28 +52,28 @@ public class PuestoService {
         // lo necesitás para luego agregarle características
     }
 
-//    // Agregar característica con nivel al puesto recién creado
-//    @Transactional
-//    public void agregarCaracteristica(Integer idPuesto,
-//                                      Integer idCaracteristica,
-//                                      Integer nivel) {
-//
-//        Puesto puesto = puestoRepository.findById(idPuesto)
-//                .orElseThrow(() -> new IllegalArgumentException("Puesto no encontrado."));
-//
-//        Caracteristica caracteristica = caracteristicaRepo.findById(idCaracteristica)
-//                .orElseThrow(() -> new IllegalArgumentException("Característica no encontrada."));
-//
-//        PuestoCaracteristicaId pk = new PuestoCaracteristicaId();
-//        pk.setIdPuesto(idPuesto);
-//        pk.setIdCaracteristica(idCaracteristica);
-//
-//        PuestoCaracteristica pc = new PuestoCaracteristica();
-//        pc.setId(pk);
-//        pc.setIdPuesto(puesto);
-//        pc.setIdCaracteristica(caracteristica);
-//        pc.setNivelRequerido(nivel);
-//
-//        pcRepo.save(pc);
-//    }
+    // Agregar característica con nivel al puesto recién creado
+    @Transactional
+    public void agregarCaracteristica(Integer idPuesto,
+                                      Integer idCaracteristica,
+                                      Integer nivel) {
+
+        Puesto puesto = puestoRepository.findById(idPuesto)
+                .orElseThrow(() -> new IllegalArgumentException("Puesto no encontrado."));
+
+        Caracteristica caracteristica = caracteristicaRepo.findById(idCaracteristica)
+                .orElseThrow(() -> new IllegalArgumentException("Característica no encontrada."));
+
+        PuestoCaracteristicaId pk = new PuestoCaracteristicaId();
+        pk.setIdPuesto(idPuesto);
+        pk.setIdCaracteristica(idCaracteristica);
+
+        PuestoCaracteristica pc = new PuestoCaracteristica();
+        pc.setId(pk);
+        pc.setIdPuesto(puesto);
+        pc.setIdCaracteristica(caracteristica);
+        pc.setNivelRequerido(nivel);
+
+        pcRepo.save(pc);
+    }
 }
