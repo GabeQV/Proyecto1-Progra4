@@ -27,15 +27,19 @@ public class SecurityConfig {
         http
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/", "/login", "/registro-empresa", "/RegistroOferente", "/css/**", "/js/**", "/images/**","/SaveOfer").permitAll()
+                        // ------ AÑADIR REGLAS PARA LOS NUEVOS DASHBOARDS ------
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/empresa/**").hasRole("EMPRESA")
                         .requestMatchers("/oferente/**").hasRole("OFERENTE")
+                        // ----------------------------------------------------
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
+                        // ------ USAR NUESTRO MANEJADOR PERSONALIZADO ------
                         .successHandler(customAuthenticationSuccessHandler)
+                        // ----------------------------------------------------
                         .permitAll()
                 )
                 .logout(logout -> logout

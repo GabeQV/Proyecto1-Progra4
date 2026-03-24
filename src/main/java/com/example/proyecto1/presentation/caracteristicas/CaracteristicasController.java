@@ -5,10 +5,6 @@ import com.example.proyecto1.data.OferenteHabilidadRepository;
 import com.example.proyecto1.data.OferenteRepository;
 import com.example.proyecto1.data.UsuarioRepository;
 import com.example.proyecto1.logic.*;
-import com.example.proyecto1.data.UsuarioRepository;
-import com.example.proyecto1.logic.Caracteristica;
-import com.example.proyecto1.logic.Usuario;
-import com.example.proyecto1.logic.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,13 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 @Controller
 public class CaracteristicasController {
-
-    private final AdminService adminService;
-    private final UsuarioRepository usuarioRepository;
 
     @Autowired
     private CaracteristicaRepository caracteristicaRepository;
@@ -45,8 +40,8 @@ public class CaracteristicasController {
         Usuario admin = usuarioRepository.findById(principal.getName()).orElse(null);
         model.addAttribute("adminEmail", admin != null ? admin.getCorreo() : "No encontrado");
 
-        Map<String, Object> viewData = adminService.getCaracteristicasViewData(actualId);
-        model.addAllAttributes(viewData);
+        List<Caracteristica> subCategorias;
+        List<Caracteristica> breadcrumbs = new ArrayList<>();
 
         if (actualId == null) {
             subCategorias = caracteristicaRepository.findByIdPadreIsNull();
@@ -65,6 +60,7 @@ public class CaracteristicasController {
         model.addAttribute("subCategorias", subCategorias);
         model.addAttribute("breadcrumbs", breadcrumbs);
         model.addAttribute("nuevaCaracteristica", new Caracteristica());
+        model.addAttribute("listaTodosPadres", caracteristicaRepository.findAll());
 
         return "admin/caracteristicas";
     }
