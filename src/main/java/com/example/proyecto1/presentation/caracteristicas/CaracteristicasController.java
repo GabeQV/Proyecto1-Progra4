@@ -1,14 +1,14 @@
 package com.example.proyecto1.presentation.caracteristicas;
 
 import com.example.proyecto1.data.CaracteristicaRepository;
+import com.example.proyecto1.data.OferenteHabilidadRepository;
+import com.example.proyecto1.data.OferenteRepository;
 import com.example.proyecto1.data.UsuarioRepository;
-import com.example.proyecto1.logic.Caracteristica;
-import com.example.proyecto1.logic.Usuario;
+import com.example.proyecto1.logic.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -24,9 +24,18 @@ public class CaracteristicasController {
     private CaracteristicaRepository caracteristicaRepository;
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private OferenteHabilidadRepository oferenteHabilidadRepository;
+    @Autowired
+    private OferenteRepository oferenteRepository;
+
+    // ── ADMIN ──────────────────────────────────────────────────────────────
 
     @GetMapping("/admin/caracteristicas")
-    public String showCaracteristicas(@RequestParam(required = false) Integer actualId, Model model, Principal principal) {
+    public String showCaracteristicasAdmin(
+            @RequestParam(required = false) Integer actualId,
+            Model model,
+            Principal principal) {
 
         Usuario admin = usuarioRepository.findById(principal.getName()).orElse(null);
         model.addAttribute("adminEmail", admin != null ? admin.getCorreo() : "No encontrado");
@@ -39,7 +48,6 @@ public class CaracteristicasController {
             model.addAttribute("titulo", "Categorías: raíces");
         } else {
             subCategorias = caracteristicaRepository.findByIdPadre_Id(actualId);
-
             Caracteristica actual = caracteristicaRepository.findById(actualId).orElse(null);
             model.addAttribute("titulo", "Subcategorías de: " + (actual != null ? actual.getNombre() : ""));
             while (actual != null) {
@@ -51,8 +59,6 @@ public class CaracteristicasController {
 
         model.addAttribute("subCategorias", subCategorias);
         model.addAttribute("breadcrumbs", breadcrumbs);
-
-        // Para el formulario de "Agregar Característica"
         model.addAttribute("nuevaCaracteristica", new Caracteristica());
         model.addAttribute("listaTodosPadres", caracteristicaRepository.findAll());
 
@@ -60,11 +66,101 @@ public class CaracteristicasController {
     }
 
     @PostMapping("/admin/caracteristicas/agregar")
-    public String agregarCaracteristica(@ModelAttribute Caracteristica nuevaCaracteristica) {
-        if (nuevaCaracteristica.getIdPadre() != null && nuevaCaracteristica.getIdPadre().getId() == 0) {
-            nuevaCaracteristica.setIdPadre(null);
+    public String agregarCaracteristicaAdmin(
+            @RequestParam String nombre,
+            @RequestParam(required = false) Integer idPadre) {
+
+        Caracteristica nueva = new Caracteristica();
+        nueva.setNombre(nombre);
+        if (idPadre != null && idPadre != 0) {
+            Caracteristica padre = caracteristicaRepository.findById(idPadre).orElse(null);
+            nueva.setIdPadre(padre);
         }
-        caracteristicaRepository.save(nuevaCaracteristica);
+        caracteristicaRepository.save(nueva);
         return "redirect:/admin/caracteristicas";
+    }
+
+    // ── OFERENTE ───────────────────────────────────────────────────────────
+
+    @GetMapping("/oferente/habilidad")
+    public String showHabilidadesOferente(
+            @RequestParam(required = false) Integer actualId, Model model, Principal principal) {
+
+        Usuario usuario = usuarioRepository.findById(principal.getName()).orElse(null);
+        model.addAttribute("adminEmail", usuario != null ? usuario.getCorreo() : "");
+
+        Oferente oferente = oferenteRepository.findById(principal.getName()).orElse(null);
+        List<OferenteHabilidad> misHabilidades = new ArrayList<>();
+        if (oferente != null) {
+            oferenteHabilidadRepository
+                    .findAll()
+                    .forEach(h -> {
+                        if (h.getIdOferente().getId().equals(principal.getName())) {
+                            misHabilidades.add(h);
+                        }
+                    });
+        }
+        model.addAttribute("misHabilidades", misHabilidades);
+
+        // ── Panel central: árbol de categorías navegable ──
+        List<Caracteristica> subCategorias;
+        List<Caracteristica> breadcrumbs = new ArrayList<>();
+        Caracteristica categoriaActual = null;
+
+        if (actualId == null) {
+            subCategorias = caracteristicaRepository.findByIdPadreIsNull();
+            model.addAttribute("titulo", "Categorías: raíces");
+        } else {
+            categoriaActual = caracteristicaRepository.findById(actualId).orElse(null);
+            subCategorias = caracteristicaRepository.findByIdPadre_Id(actualId);
+            model.addAttribute("titulo", "Subcategorías de: " + (categoriaActual != null ? categoriaActual.getNombre() : ""));
+
+            Caracteristica cursor = categoriaActual;
+            while (cursor != null) {
+                breadcrumbs.add(cursor);
+                cursor = cursor.getIdPadre();
+            }
+            Collections.reverse(breadcrumbs);
+        }
+
+        model.addAttribute("subCategorias", subCategorias);
+        model.addAttribute("breadcrumbs", breadcrumbs);
+        model.addAttribute("categoriaActual", categoriaActual);
+
+        // ── Panel derecho: select con las categorías disponibles ──
+        model.addAttribute("todasCategorias", caracteristicaRepository.findAll());
+
+        return "oferente/habilidades";
+    }
+
+    @PostMapping("/oferente/habilidad/agregar")
+    public String agregarHabilidadOferente(
+            @RequestParam Integer idCaracteristica,
+            @RequestParam Integer nivel,
+            @RequestParam(required = false) Integer actualId,
+            Principal principal) {
+
+        Oferente oferente = oferenteRepository.findById(principal.getName()).orElse(null);
+        Caracteristica caracteristica = caracteristicaRepository.findById(idCaracteristica).orElse(null);
+
+        if (oferente != null && caracteristica != null) {
+            OferenteHabilidadId compositeId = new OferenteHabilidadId();
+            compositeId.setIdOferente(principal.getName());
+            compositeId.setIdCaracteristica(idCaracteristica);
+
+            OferenteHabilidad habilidad = new OferenteHabilidad();
+            habilidad.setId(compositeId);
+            habilidad.setIdOferente(oferente);
+            habilidad.setIdCaracteristica(caracteristica);
+            habilidad.setNivel(nivel);
+
+            oferenteHabilidadRepository.save(habilidad);
+        }
+
+        // Vuelve al mismo nivel del árbol donde estaba
+        if (actualId != null) {
+            return "redirect:/oferente/habilidad?actualId=" + actualId;
+        }
+        return "redirect:/oferente/habilidad";
     }
 }

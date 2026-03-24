@@ -1,10 +1,8 @@
 package com.example.proyecto1.presentation.puestos;
 
-import com.example.proyecto1.logic.Caracteristica;
 import com.example.proyecto1.logic.Empresa;
 import com.example.proyecto1.logic.Puesto;
-import com.example.proyecto1.logic.service.EmpresaService;
-import com.example.proyecto1.logic.service.PuestoService;
+import com.example.proyecto1.logic.Service;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,20 +14,17 @@ import java.util.List;
 @RequestMapping("/empresa/puestos")  // ← base de todas las rutas de puestos
 public class PuestosController {
 
-    private final PuestoService puestoService;
-    private final EmpresaService empresaService;
+    private final Service service;
 
-    public PuestosController(PuestoService puestoService,
-                             EmpresaService empresaService) {
-        this.puestoService  = puestoService;
-        this.empresaService = empresaService;
+    public PuestosController(Service service) {
+        this.service  = service;
     }
 
     // GET /empresa/puestos
     @GetMapping
     public String listarPuestos(Model model, Principal principal) {
-        Empresa empresa = empresaService.buscarPorId(principal.getName());
-        List<Puesto> puestos = puestoService.getPuestosDeEmpresa(principal.getName());
+        Empresa empresa = service.buscarPorIdEmp(principal.getName());
+        List<Puesto> puestos = service.getPuestosDeEmpresa(principal.getName());
 
         model.addAttribute("empresa", empresa);
         model.addAttribute("puestos", puestos);
@@ -39,7 +34,7 @@ public class PuestosController {
     // POST /empresa/puestos/{id}/desactivar
     @PostMapping("/{id}/desactivar")
     public String desactivar(@PathVariable Integer id) {
-        puestoService.desactivar(id);
+        service.desactivar(id);
         return "redirect:/empresa/puestos";
     }
 //    @GetMapping("/nuevo")

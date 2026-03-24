@@ -80,12 +80,12 @@ public class DataLoader implements CommandLineRunner {
             userOferentePendiente.setCorreo("oferente2@test.com");
             userOferentePendiente.setClave(password);
             userOferentePendiente.setRolUsuario("OFERENTE");
-            userOferentePendiente.setActivo(false);
+            userOferentePendiente.setActivo(true);
 
             Oferente oferentePendiente = new Oferente();
             oferentePendiente.setNombre("Carlos");
             oferentePendiente.setPrimerApellido("Rojas");
-            oferentePendiente.setAprobado(false);
+            oferentePendiente.setAprobado(true);
 
             // Vinculamos en ambas direcciones
             userOferentePendiente.setOferente(oferentePendiente);

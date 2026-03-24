@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Oferente - Mi CV</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { display: flex; flex-direction: column; min-height: 100vh; background-color: #f8f9fa; }
+
+        .nav-brand-logo {
+            width: 36px;
+            height: 36px;
+            background: #0d6efd;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .upload-zone {
+            border: 2px dashed #adb5bd;
+            border-radius: 10px;
+            background: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .upload-zone:hover {
+            border-color: #0d6efd;
+            background: #f0f5ff;
+        }
+        .upload-icon {
+            font-size: 3rem;
+            color: #adb5bd;
+            display: block;
+            margin-bottom: 0.75rem;
+        }
+
+        .cv-card {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .cv-card .pdf-icon { font-size: 2rem; color: #dc3545; flex-shrink: 0; }
+        .cv-card .cv-name  { font-weight: 600; font-size: 0.95rem; word-break: break-all; }
+
+        .panel-upload {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<header class="bg-dark text-white p-2">
+    <div class="container d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center">
+            <span class="nav-brand-logo">BE</span>
+            <span class="fw-bold me-4">BolsaEmpleo</span>
+            <nav>
+                <a th:href="@{/oferente/dashboard}" class="text-white-50 me-3 text-decoration-none">Dashboard</a>
+                <a th:href="@{/oferente/habilidad}" class="text-white-50 me-3 text-decoration-none">Mis Habilidades</a>
+                <a th:href="@{/oferente/CV}" class="text-white me-3 text-decoration-none fw-bold">Mi CV</a>
+            </nav>
+        </div>
+        <div class="d-flex align-items-center">
+            <span class="me-3 small" th:text="${oferente.usuario.correo}">jsanchez@correo.com</span>
+            <form th:action="@{/logout}" method="post" class="mb-0">
+                <button type="submit" class="btn btn-outline-light btn-sm">Salir</button>
+            </form>
+        </div>
+    </div>
+</header>
+
+<!-- CONTENIDO -->
+<div class="container mt-4 flex-grow-1">
+
+    <h4 class="mb-4">Mi CV</h4>
+
+    <div th:if="${mensajeExito}" class="alert alert-success alert-dismissible fade show" role="alert">
+        <span th:text="${mensajeExito}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    <div th:if="${mensajeError}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${mensajeError}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="row g-4">
+
+        <!-- CV actual -->
+        <div class="col-md-5">
+            <div class="panel-upload h-100">
+                <h6 class="mb-3">CV actual</h6>
+
+                <!-- Tiene CV -->
+                <div th:if="${oferente.cvRuta != null}">
+                    <div class="cv-card mb-3">
+                        <span class="pdf-icon">📄</span>
+                        <div>
+                            <div class="cv-name" th:text="${oferente.cvRuta}">curriculum.pdf</div>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2">
+                        <a th:href="@{/oferente/CV/descargar}" class="btn btn-outline-primary btn-sm">⬇ Descargar</a>
+                        <form th:action="@{/oferente/CV/eliminar}" method="post" class="mb-0">
+                            <button type="submit" class="btn btn-outline-danger btn-sm"
+                                    onclick="return confirm('¿Eliminar el CV actual?')">
+                                🗑 Eliminar
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- No tiene CV -->
+                <div th:if="${oferente.cvRuta == null}">
+                    <div class="text-center text-muted py-4">
+                        <span style="font-size:2.5rem;">📭</span>
+                        <p class="mt-2 mb-0 small">Aún no has subido tu CV.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Formulario subida -->
+        <div class="col-md-7">
+            <div class="panel-upload">
+                <h6 class="mb-3">
+                    <span th:if="${oferente.cvRuta != null}">Reemplazar CV</span>
+                    <span th:if="${oferente.cvRuta == null}">Subir CV</span>
+                </h6>
+
+                <form th:action="@{/oferente/CV/subir}" method="post" enctype="multipart/form-data">
+                    <label for="archivoCV" class="upload-zone d-block mb-3">
+                        <span class="upload-icon">📂</span>
+                        <p class="mb-1 fw-semibold">Seleccioná o arrastrá tu CV aquí</p>
+                        <p class="text-muted small mb-0">Solo archivos PDF · Máximo 5 MB</p>
+                    </label>
+                    <input type="file" id="archivoCV" name="archivo"
+                           accept="application/pdf"
+                           class="form-control form-control-sm mb-3" required />
+                    <div class="d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">⬆ Subir CV</button>
+                    </div>
+                </form>
+
+                <hr class="my-3">
+                <ul class="small text-muted mb-0 ps-3">
+                    <li>El archivo debe estar en formato <strong>PDF</strong>.</li>
+                    <li>El tamaño máximo permitido es <strong>5 MB</strong>.</li>
+                    <li>Si ya tenés un CV cargado, este será <strong>reemplazado</strong>.</li>
+                    <li>Tu CV será visible para las empresas que busquen tu perfil.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="bg-dark text-white p-3 mt-auto">
+    <div class="container d-flex justify-content-between align-items-start">
+        <div>
+            <div class="fw-bold">Bolsa de Empleo</div>
+            <div class="small text-white-50">Total Soft Inc.</div>
+        </div>
+        <div class="text-end small text-white-50">
+            <div>Contacto: info@bolsaempleo.local</div>
+            <div>Créditos: Equipo de desarrollo</div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
