@@ -13,7 +13,6 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    // Inyectamos nuestro manejador personalizado
     @Autowired
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
@@ -26,24 +25,26 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/", "/login", "/registro-empresa", "/RegistroOferente", "/css/**", "/js/**", "/images/**","/SaveOfer").permitAll()
-                        // ------ AÑADIR REGLAS PARA LOS NUEVOS DASHBOARDS ------
+                        .requestMatchers("/", "/login", "/registro-empresa", "/RegistroOferente",
+                                "/css/**", "/js/**", "/images/**", "/SaveOfer").permitAll()
                         .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers("/empresa/**").hasRole("EMPRESA")
                         .requestMatchers("/oferente/**").hasRole("OFERENTE")
-                        // ----------------------------------------------------
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        // ------ USAR NUESTRO MANEJADOR PERSONALIZADO ------
+                        // Le decimos a Spring que el campo del form que tiene el correo
+                        // se llama "username" (nombre por defecto, ya coincide con el HTML)
+                        .usernameParameter("username")
+                        .passwordParameter("password")
                         .successHandler(customAuthenticationSuccessHandler)
-                        // ----------------------------------------------------
+                        .failureUrl("/login?error")
                         .permitAll()
                 )
                 .logout(logout -> logout
-                        .logoutSuccessUrl("/login?logout") // Redirigir a login con mensaje de logout
+                        .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 );
         return http.build();

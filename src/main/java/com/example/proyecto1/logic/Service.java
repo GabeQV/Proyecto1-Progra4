@@ -139,6 +139,7 @@ public class Service {
 
 
 
+
     public List<Oferente> obtenerOferentesPendientes() {
         return oferenteRepo.findByAprobadoFalse();
     }
