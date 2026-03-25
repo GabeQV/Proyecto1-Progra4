@@ -55,12 +55,13 @@ public class PuestosController {
             @RequestParam String descripcion,
             @RequestParam Double salario,
             @RequestParam String tipoPuesto,
+            @RequestParam String moneda,
             @RequestParam List<Integer> idCaracteristicas,
             @RequestParam List<Integer> niveles,
             Principal principal) {
 
         Puesto puesto = service.crearPuesto(
-                principal.getName(), descripcion, salario, tipoPuesto);
+                principal.getName(), descripcion, salario, tipoPuesto,moneda);
 
         for (int i = 0; i < idCaracteristicas.size(); i++) {
             if (niveles.get(i) > 0) {   // <-- solo guardar si hay nivel real

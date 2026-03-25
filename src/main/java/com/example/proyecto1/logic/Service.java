@@ -238,7 +238,7 @@ public class Service {
 
     @Transactional
     public Puesto crearPuesto(String idEmpresa, String descripcion,
-                              Double salario, String tipoPuesto) {  // ← nuevo parámetro
+                              Double salario, String tipoPuesto,String moneda) {  // ← nuevo parámetro
 
         // ── Validación 1: descripción con al menos una palabra real ──
         if (descripcion == null || descripcion.trim().isEmpty()) {
@@ -265,10 +265,10 @@ public class Service {
 
         Puesto puesto = new Puesto();
         puesto.setIdEmpresa(empresa);
-        puesto.setDescripcion(descripcion.trim());  // guardás sin espacios extra
+        puesto.setDescripcion(descripcion.trim());
         puesto.setSalario(salario);
         puesto.setTipoPuesto(tipoPuesto);
-//        puesto.setMoneda(moneda);                   // ← nuevo
+        puesto.setMoneda(moneda);
         puesto.setActivo(true);
         puesto.setFechaRegistro(LocalDate.now());
 

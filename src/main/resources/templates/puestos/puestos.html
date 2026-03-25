@@ -67,7 +67,12 @@
 
                 <td th:text="${puesto.id}"></td>
                 <td th:text="${puesto.descripcion}"></td>
-                <td th:text="${puesto.salario}"></td>
+                <td>
+                    <!-- Muestra ₡ o $ según la moneda del puesto -->
+                    <span th:if="${puesto.moneda == 'COLON'}">₡</span>
+                    <span th:if="${puesto.moneda == 'DOLAR'}">$</span>
+                    <span th:text="${puesto.salario}"></span>
+                </td>
                 <td th:text="${puesto.tipoPuesto}"></td>
 
                 <!-- Verde si activo, rojo si no -->

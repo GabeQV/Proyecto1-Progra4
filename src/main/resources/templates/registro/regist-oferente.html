@@ -50,72 +50,132 @@
 
                 <div class="mb-3">
                     <label for="id" class="form-label">Identificación</label>
-                    <input type="text" class="form-control"
-                           id="id" name="id"
-                           placeholder="Ej: 123456789" required maxlength="20">
+                    <input type="text"
+                           class="form-control"
+                           id="id"
+                           name="id"
+                           placeholder="Ej: 123456789"
+                           required
+                           minlength="5"
+                           maxlength="20"
+                           pattern="[0-9]+"
+                           title="Solo números. Mínimo 5 dígitos">
+                    <div class="form-text">Solo números. Ej: 123456789</div>
                 </div>
 
                 <div class="mb-3">
                     <label for="correo" class="form-label">Correo electrónico</label>
-                    <input type="email" class="form-control"
-                           id="correo" name="correo"
-                           placeholder="tucorreo@email.com" required maxlength="40">
+                    <input type="email"
+                           class="form-control"
+                           id="correo"
+                           name="correo"
+                           placeholder="tucorreo@email.com"
+                           required
+                           maxlength="40"
+                           title="Ingrese un correo válido">
+                    <div class="form-text">Formato válido: tucorreo@email.com</div>
                 </div>
 
                 <div class="mb-3">
                     <label for="clave" class="form-label">Contraseña</label>
-                    <input type="password" class="form-control"
-                           id="clave" name="clave"
-                           placeholder="Mínimo 8 caracteres" required minlength="8">
+                    <input type="password"
+                           class="form-control"
+                           id="clave"
+                           name="clave"
+                           placeholder="Mínimo 8 caracteres"
+                           required
+                           minlength="8"
+                           maxlength="255"
+                           title="Mínimo 8 caracteres">
+                    <div class="form-text">Mínimo 8 caracteres.</div>
                 </div>
-
                 <hr class="my-3">
 
                 <p class="text-secondary mb-2" style="font-size:13px; font-weight:500;">
                     DATOS PERSONALES
                 </p>
 
+                <!-- Nombre -->
                 <div class="mb-3">
-                    <label for="nombre" class="form-label">Nombre</label>
-                    <input type="text" class="form-control"
-                           id="nombre" name="nombre"
-                           required maxlength="40">
+                    <label for="nombre" class="form-label">Nombre <span class="text-danger">*</span></label>
+                    <input type="text"
+                           class="form-control"
+                           id="nombre"
+                           name="nombre"
+                           required
+                           minlength="2"
+                           maxlength="40"
+                           pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+                           title="Solo letras y espacios. Entre 2 y 40 caracteres.">
                 </div>
 
+                <!-- Apellidos -->
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="primerApellido" class="form-label">Primer apellido</label>
-                        <input type="text" class="form-control"
-                               id="primerApellido" name="primerApellido"
-                               required maxlength="40">
+                        <label for="primerApellido" class="form-label">Primer apellido <span class="text-danger">*</span></label>
+                        <input type="text"
+                               class="form-control"
+                               id="primerApellido"
+                               name="primerApellido"
+                               required
+                               minlength="2"
+                               maxlength="40"
+                               pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+                               title="Solo letras. Entre 2 y 40 caracteres.">
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="segundoApellido" class="form-label">Segundo apellido</label>
-                        <input type="text" class="form-control"
-                               id="segundoApellido" name="segundoApellido"
-                               maxlength="40">
+                        <input type="text"
+                               class="form-control"
+                               id="segundoApellido"
+                               name="segundoApellido"
+                               maxlength="40"
+                               pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]*"
+                               title="Solo letras. Máximo 40 caracteres.">
+                        <div class="form-text">Opcional.</div>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="nacionalidad" class="form-label">Nacionalidad</label>
-                    <input type="text" class="form-control"
-                           id="nacionalidad" name="nacionalidad"
-                           required maxlength="30">
+                    <label for="nacionalidad" class="form-label">Nacionalidad <span class="text-danger">*</span></label>
+                    <input type="text"
+                           class="form-control"
+                           id="nacionalidad"
+                           name="nacionalidad"
+                           required
+                           minlength="3"
+                           maxlength="30"
+                           pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+"
+                           title="Solo letras. Entre 3 y 30 caracteres.">
+                    <div class="form-text">Ejemplo: Costarricense</div>
                 </div>
 
+                <!-- Teléfono y Residencia -->
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <label for="telefono" class="form-label">Teléfono</label>
-                        <input type="tel" class="form-control"
-                               id="telefono" name="telefono"
-                               required maxlength="20">
+                        <label for="telefono" class="form-label">Teléfono <span class="text-danger">*</span></label>
+                        <input type="tel"
+                               class="form-control"
+                               id="telefono"
+                               name="telefono"
+                               required
+                               minlength="8"
+                               maxlength="20"
+                               pattern="[0-9+\-\s]+"
+                               title="Solo números. Mínimo 8 dígitos. Ejemplo: 88887777">
+                        <div class="form-text">Ejemplo: 88887777</div>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <label for="residencia" class="form-label">Residencia</label>
-                        <input type="text" class="form-control"
-                               id="residencia" name="residencia"
-                               required maxlength="40">
+                        <label for="residencia" class="form-label">Residencia <span class="text-danger">*</span></label>
+                        <input type="text"
+                               class="form-control"
+                               id="residencia"
+                               name="residencia"
+                               required
+                               minlength="3"
+                               maxlength="40"
+                               title="Ingrese su lugar de residencia.">
+                        <div class="form-text">Ejemplo: San José</div>
                     </div>
                 </div>
 

@@ -48,51 +48,89 @@
 
                 <!-- ID -->
                 <div class="mb-3">
-                    <label class="form-label">Identificación</label>
-                    <input type="text" class="form-control"
-                           name="id" required>
+                    <label class="form-label">Identificación <span class="text-danger">*</span></label>
+                    <input type="text"
+                           class="form-control"
+                           name="id"
+                           required
+                           minlength="3"
+                           maxlength="20"
+                           pattern="[A-Za-z0-9]+"
+                           title="Solo letras y números, sin espacios. Entre 3 y 20 caracteres.">
+                    <div class="form-text">Solo letras y números, sin espacios. Máximo 20 caracteres.</div>
                 </div>
 
                 <!-- Nombre -->
                 <div class="mb-3">
-                    <label class="form-label">Nombre de la empresa</label>
-                    <input type="text" class="form-control"
-                           name="nombre" required>
+                    <label class="form-label">Nombre de la empresa <span class="text-danger">*</span></label>
+                    <input type="text"
+                           class="form-control"
+                           name="nombre"
+                           required
+                           minlength="2"
+                           maxlength="60"
+                           title="El nombre debe tener entre 2 y 60 caracteres.">
+                    <div class="form-text">Entre 2 y 60 caracteres.</div>
                 </div>
 
                 <!-- Localización -->
                 <div class="mb-3">
-                    <label class="form-label">Localización</label>
-                    <input type="text" class="form-control"
-                           name="localizacion" required>
+                    <label class="form-label">Localización <span class="text-danger">*</span></label>
+                    <input type="text"
+                           class="form-control"
+                           name="localizacion"
+                           required
+                           minlength="3"
+                           maxlength="60"
+                           title="Ingrese la localización de la empresa.">
                 </div>
 
                 <!-- Correo -->
                 <div class="mb-3">
-                    <label class="form-label">Correo electrónico</label>
-                    <input type="email" class="form-control"
-                           name="correo" required>
+                    <label class="form-label">Correo electrónico <span class="text-danger">*</span></label>
+                    <input type="email"
+                           class="form-control"
+                           name="correo"
+                           required
+                           maxlength="40"
+                           title="Ingrese un correo electrónico válido.">
+                    <div class="form-text">Ejemplo: empresa@correo.com</div>
                 </div>
 
                 <!-- Teléfono -->
                 <div class="mb-3">
-                    <label class="form-label">Teléfono</label>
-                    <input type="text" class="form-control"
-                           name="telefono" required>
+                    <label class="form-label">Teléfono <span class="text-danger">*</span></label>
+                    <input type="tel"
+                           class="form-control"
+                           name="telefono"
+                           required
+                           minlength="8"
+                           maxlength="20"
+                           pattern="[0-9+\-\s]+"
+                           title="Solo números, guiones o espacios. Mínimo 8 dígitos.">
+                    <div class="form-text">Solo números. Ejemplo: 88887777</div>
                 </div>
-
                 <!-- Descripción -->
                 <div class="mb-3">
                     <label class="form-label">Descripción</label>
                     <textarea class="form-control"
-                              name="descripcion" rows="3"></textarea>
+                              name="descripcion"
+                              rows="3"
+                              maxlength="255"
+                              title="Máximo 255 caracteres."></textarea>
+                    <div class="form-text">Opcional. Máximo 255 caracteres.</div>
                 </div>
-
                 <!-- Clave -->
                 <div class="mb-3">
-                    <label class="form-label">Contraseña</label>
-                    <input type="password" class="form-control"
-                           name="clave" required>
+                    <label class="form-label">Contraseña <span class="text-danger">*</span></label>
+                    <input type="password"
+                           class="form-control"
+                           name="clave"
+                           required
+                           minlength="8"
+                           maxlength="255"
+                           title="La contraseña debe tener al menos 8 caracteres.">
+                    <div class="form-text">Mínimo 8 caracteres.</div>
                 </div>
 
                 <button type="submit" class="btn btn-primary w-100">

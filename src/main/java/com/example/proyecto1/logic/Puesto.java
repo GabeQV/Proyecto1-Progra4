@@ -43,5 +43,9 @@ public class Puesto {
     @Column(name = "fecha_registro")
     private LocalDate fechaRegistro;
 
+    @Size(max = 6)
+    @Column(name = "moneda", length = 6)
+    private String moneda;
+
 
 }

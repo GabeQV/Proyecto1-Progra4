@@ -66,7 +66,11 @@
                 <div class="card-body">
                     <h6 class="card-title" th:text="${p.idEmpresa.nombre}">Empresa</h6>
                     <p class="card-text text-muted" th:text="${p.descripcion}">Descripción</p>
-                    <strong th:text="'₡ ' + ${p.salario}">₡ 0</strong>
+                    <strong>
+                        <span th:if="${p.moneda == 'DOLAR'}">$ </span>
+                        <span th:unless="${p.moneda == 'DOLAR'}">₡ </span>
+                        <span th:text="${p.salario}"></span>
+                    </strong>
 
                     <!-- Este div está DENTRO de .puesto-card -->
                     <!-- CSS lo muestra solo cuando hay hover en la tarjeta padre -->
