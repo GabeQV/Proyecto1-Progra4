@@ -42,6 +42,14 @@ public class Service {
         this.oferenteHabilidadRepository = ohr;
     }
 
+    // ----------------publico
+
+
+    public List<Puesto> getTop5PuestosPublicos() {
+        return puestoRepository.findTop5ByTipoPuestoAndActivoTrueOrderByFechaRegistroDesc("publico");
+    }
+
+
     // ── USUARIO ──────────────────────────────────────────────────────────────
 
     public Optional<Usuario> buscarUsuarioPorId(String id) {

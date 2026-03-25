@@ -6,12 +6,17 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
 @Entity
 @Table(name = "puesto")
 public class Puesto {
+    @OneToMany(mappedBy = "idPuesto", fetch = FetchType.LAZY)
+    private List<PuestoCaracteristica> caracteristicas = new ArrayList<>();
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
