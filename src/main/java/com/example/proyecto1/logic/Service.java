@@ -231,6 +231,13 @@ public class Service {
         });
     }
 
+    public List<Puesto> buscarPuestosPublicos(List<Integer> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return puestoRepository.findPuestosPublicosPorCaracteristicas(ids);
+    }
+
     @Transactional
     public Puesto crearPuesto(String idEmpresa, String descripcion, Double salario, String tipoPuesto) {
         Empresa empresa = empresaRepo.findById(idEmpresa)
