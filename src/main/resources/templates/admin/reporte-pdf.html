@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Reporte</title>
+    <style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            margin: 30px;
+        }
+        h2 { color: #222222; margin-bottom: 4px; }
+        p  { color: #555555; margin: 2px 0; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th {
+            background-color: #343a40;
+            color: white;
+            padding: 7px 8px;
+            text-align: left;
+        }
+        td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #dddddd;
+        }
+        tr.par td { background-color: #f5f5f5; }
+        .sin-datos {
+            color: #999999;
+            font-style: italic;
+            text-align: center;
+            padding: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Reporte de Puestos Solicitados</h2>
+<p>Mes: <b th:text="${nombreMes}">Mes</b> /
+    Anio: <b th:text="${anio}">2026</b></p>
+<p>Total de puestos: <b th:text="${puestos.size()}">0</b></p>
+
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Empresa</th>
+        <th>Descripcion</th>
+        <th>Salario</th>
+        <th>Tipo</th>
+        <th>Fecha</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <!-- Caso: hay puestos -->
+    <tr th:each="p, stat : ${puestos}"
+        th:class="${stat.even} ? 'par' : ''">
+        <td th:text="${p.id}">1</td>
+        <td th:text="${p.empresa}">Empresa</td>
+        <td th:text="${p.descripcion}">Descripcion</td>
+        <td th:text="${p.salario}">0</td>
+        <td th:text="${p.tipoPuesto}">publico</td>
+        <td th:text="${p.fechaRegistro}">2026-01-01</td>
+    </tr>
+
+    <!-- Caso: no hay puestos — no se cae, muestra mensaje -->
+    <tr th:if="${puestos.isEmpty()}">
+        <td colspan="6" class="sin-datos">
+            No hay puestos registrados en este mes.
+        </td>
+    </tr>
+
+    </tbody>
+</table>
+
+</body>
+</html>

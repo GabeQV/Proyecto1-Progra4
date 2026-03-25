@@ -26,12 +26,9 @@ public class Service {
     private final PasswordEncoder passwordEncoder;
     private final CaracteristicaRepository caracteristicaRepository;
     private final OferenteHabilidadRepository oferenteHabilidadRepository;
+    private final ReportePuestoRepository reportePuestoRepository;
 
-    public Service(UsuarioRepository ur, OferenteRepository or, EmpresaRepository er,
-                   PasswordEncoder pe, PuestoRepository po,
-                   PuestoCaracteristicaRepository pcr,
-                   CaracteristicaRepository cr,
-                   OferenteHabilidadRepository ohr) {
+    public Service(UsuarioRepository ur, OferenteRepository or, EmpresaRepository er, PasswordEncoder pe, PuestoRepository po, PuestoCaracteristicaRepository pcr, CaracteristicaRepository cr, OferenteHabilidadRepository ohr,ReportePuestoRepository rpr) {
         this.usuarioRepo = ur;
         this.oferenteRepo = or;
         this.empresaRepo = er;
@@ -40,6 +37,7 @@ public class Service {
         this.puestoCaracteristicaRepository = pcr;
         this.caracteristicaRepository = cr;
         this.oferenteHabilidadRepository = ohr;
+        this.reportePuestoRepository = rpr;
     }
 
     // ----------------publico
@@ -231,6 +229,13 @@ public class Service {
         });
     }
 
+    public List<Puesto> buscarPuestosPublicos(List<Integer> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return puestoRepository.findPuestosPublicosPorCaracteristicas(ids);
+    }
+
     @Transactional
     public Puesto crearPuesto(String idEmpresa, String descripcion,
                               Double salario, String tipoPuesto) {  // ← nuevo parámetro
@@ -269,6 +274,7 @@ public class Service {
 
         return puestoRepository.save(puesto);
     }
+
     /**
      * Asocia una característica con nivel requerido al puesto indicado.
      * Guarda en la tabla puesto_caracteristica (no en puesto).
@@ -335,6 +341,21 @@ public class Service {
             }
         }
         caracteristicaRepository.save(nueva);
+    }
+
+    // ── REPORTES ──────────────────────────────────────────────────────────────
+
+    public List<ReportePuesto> getReportePorMes(int mes, int anio) {
+        return reportePuestoRepository.findByMesAndAnio(mes, anio);
+    }
+
+    // Retorna los nombres de los meses para el select del formulario
+    public List<String> getNombresMeses() {
+        return List.of(
+                "Enero", "Febrero", "Marzo", "Abril",
+                "Mayo", "Junio", "Julio", "Agosto",
+                "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        );
     }
     // ── BÚSQUEDA DE CANDIDATOS ────────────────────────────────────────────────
 
