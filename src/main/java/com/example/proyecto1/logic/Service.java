@@ -274,7 +274,6 @@ public class Service {
 
         return puestoRepository.save(puesto);
     }
-
     /**
      * Asocia una característica con nivel requerido al puesto indicado.
      * Guarda en la tabla puesto_caracteristica (no en puesto).
@@ -342,21 +341,6 @@ public class Service {
         }
         caracteristicaRepository.save(nueva);
     }
-
-    // ── REPORTES ──────────────────────────────────────────────────────────────
-
-    public List<ReportePuesto> getReportePorMes(int mes, int anio) {
-        return reportePuestoRepository.findByMesAndAnio(mes, anio);
-    }
-
-    // Retorna los nombres de los meses para el select del formulario
-    public List<String> getNombresMeses() {
-        return List.of(
-                "Enero", "Febrero", "Marzo", "Abril",
-                "Mayo", "Junio", "Julio", "Agosto",
-                "Septiembre", "Octubre", "Noviembre", "Diciembre"
-        );
-    }
     // ── BÚSQUEDA DE CANDIDATOS ────────────────────────────────────────────────
 
     public static class ResultadoCandidato {
@@ -418,5 +402,20 @@ public class Service {
 
     public List<PuestoCaracteristica> getCaracteristicasDePuesto(Integer idPuesto) {
         return puestoCaracteristicaRepository.findByIdPuesto_Id(idPuesto);
+    }
+
+    // ── REPORTES ──────────────────────────────────────────────────────────────
+
+    public List<ReportePuesto> getReportePorMes(int mes, int anio) {
+        return reportePuestoRepository.findByMesAndAnio(mes, anio);
+    }
+
+    // Retorna los nombres de los meses para el select del formulario
+    public List<String> getNombresMeses() {
+        return List.of(
+                "Enero", "Febrero", "Marzo", "Abril",
+                "Mayo", "Junio", "Julio", "Agosto",
+                "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        );
     }
 }
