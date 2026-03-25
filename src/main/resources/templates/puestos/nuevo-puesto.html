@@ -35,20 +35,39 @@
 <div class="container mt-4 flex-grow-1">
     <h2>Publicar nuevo puesto</h2>
 
+    <div th:if="${error}" class="alert alert-danger" th:text="${error}"></div>
+    <div th:if="${exito}" class="alert alert-success" th:text="${exito}"></div>
+
     <form th:action="@{/empresa/puestos/nuevo}" method="post">
 
         <!-- Descripción -->
         <div class="mb-3">
             <label class="form-label">Descripción del puesto</label>
-            <input type="text" name="descripcion"
-                   class="form-control" required/>
+            <input type="text"
+                   name="descripcion"
+                   class="form-control"
+                   placeholder="Ej: Desarrollador Backend Java"
+                   minlength="2"
+                   pattern=".*\S.*"
+                   title="Debe contener al menos una palabra"
+                   required/>
+            <div class="form-text">Mínimo una palabra, sin espacios en blanco.</div>
         </div>
 
         <!-- Salario -->
         <div class="mb-3">
             <label class="form-label">Salario ofrecido</label>
-            <input type="number" name="salario" step="0.01"
-                   class="form-control" required/>
+            <div class="input-group">
+                <input type="number"
+                       name="salario"
+                       class="form-control"
+                       placeholder="Ej: 500000"
+                       min="1"
+                       step="0.01"
+                       title="El salario debe ser mayor o igual a 1"
+                       required/>
+            </div>
+            <div class="form-text">El salario debe ser mayor o igual a 1.</div>
         </div>
 
         <!-- Tipo de publicación -->

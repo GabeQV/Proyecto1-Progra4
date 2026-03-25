@@ -237,19 +237,43 @@ public class Service {
     }
 
     @Transactional
-    public Puesto crearPuesto(String idEmpresa, String descripcion, Double salario, String tipoPuesto) {
+    public Puesto crearPuesto(String idEmpresa, String descripcion,
+                              Double salario, String tipoPuesto) {  // ← nuevo parámetro
+
+        // ── Validación 1: descripción con al menos una palabra real ──
+        if (descripcion == null || descripcion.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "La descripción no puede estar vacía.");
+        }
+        // trim() elimina espacios, split separa por espacios
+        // si no queda ninguna palabra lanza error
+        String[] palabras = descripcion.trim().split("\\s+");
+        if (palabras.length < 1 || palabras[0].isEmpty()) {
+            throw new IllegalArgumentException(
+                    "La descripción debe contener al menos una palabra.");
+        }
+
+        // ── Validación 2: salario >= 1 ────────────────────────────────
+        if (salario == null || salario < 1) {
+            throw new IllegalArgumentException(
+                    "El salario debe ser mayor o igual a 1.");
+        }
+
         Empresa empresa = empresaRepo.findById(idEmpresa)
-                .orElseThrow(() -> new IllegalArgumentException("Empresa no encontrada."));
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Empresa no encontrada."));
+
         Puesto puesto = new Puesto();
         puesto.setIdEmpresa(empresa);
-        puesto.setDescripcion(descripcion);
+        puesto.setDescripcion(descripcion.trim());  // guardás sin espacios extra
         puesto.setSalario(salario);
         puesto.setTipoPuesto(tipoPuesto);
+//        puesto.setMoneda(moneda);                   // ← nuevo
         puesto.setActivo(true);
         puesto.setFechaRegistro(LocalDate.now());
+
         return puestoRepository.save(puesto);
     }
-
     /**
      * Asocia una característica con nivel requerido al puesto indicado.
      * Guarda en la tabla puesto_caracteristica (no en puesto).
@@ -316,6 +340,68 @@ public class Service {
             }
         }
         caracteristicaRepository.save(nueva);
+    }
+    // ── BÚSQUEDA DE CANDIDATOS ────────────────────────────────────────────────
+
+    public static class ResultadoCandidato {
+        public Oferente oferente;
+        public int requistosCumplidos;
+        public int requisitosTotal;
+        public double porcentaje;
+
+        public ResultadoCandidato(Oferente oferente, int cumplidos, int total) {
+            this.oferente = oferente;
+            this.requistosCumplidos = cumplidos;
+            this.requisitosTotal = total;
+            this.porcentaje = total == 0 ? 0.0 : (cumplidos * 100.0 / total);
+        }
+    }
+
+    public List<ResultadoCandidato> buscarCandidatos(Integer idPuesto) {
+        List<PuestoCaracteristica> requisitos =
+                puestoCaracteristicaRepository.findByIdPuesto_Id(idPuesto);
+
+        if (requisitos.isEmpty()) return new ArrayList<>();
+
+        List<Oferente> todosOferentes = new ArrayList<>();
+        oferenteRepo.findAll().forEach(o -> {
+            if (Boolean.TRUE.equals(o.getAprobado())) todosOferentes.add(o);
+        });
+
+        List<ResultadoCandidato> resultados = new ArrayList<>();
+
+        for (Oferente oferente : todosOferentes) {
+            List<OferenteHabilidad> habilidades =
+                    oferenteHabilidadRepository.findByIdOferente_Id(oferente.getId());
+
+            int cumplidos = 0;
+            for (PuestoCaracteristica req : requisitos) {
+                for (OferenteHabilidad hab : habilidades) {
+                    if (hab.getIdCaracteristica().getId()
+                            .equals(req.getIdCaracteristica().getId())
+                            && hab.getNivel() >= req.getNivelRequerido()) {
+                        cumplidos++;
+                        break;
+                    }
+                }
+            }
+
+            if (cumplidos > 0) {
+                resultados.add(new ResultadoCandidato(oferente, cumplidos, requisitos.size()));
+            }
+        }
+
+        resultados.sort((a, b) -> Double.compare(b.porcentaje, a.porcentaje));
+        return resultados;
+    }
+
+    public Puesto getPuesto(Integer id) {
+        return puestoRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Puesto no encontrado."));
+    }
+
+    public List<PuestoCaracteristica> getCaracteristicasDePuesto(Integer idPuesto) {
+        return puestoCaracteristicaRepository.findByIdPuesto_Id(idPuesto);
     }
 
     // ── REPORTES ──────────────────────────────────────────────────────────────
