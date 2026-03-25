@@ -10,46 +10,13 @@
 </head>
 <body>
 
-<!-- ── NAVBAR ──────────────────────────────────────────── -->
-<header class="bg-dark text-white p-3">
-    <div class="container d-flex justify-content-between align-items-center">
+<header th:replace="~{fragments/header-empresa :: header-empresa}"></header>
 
-        <div class="d-flex align-items-center">
-            <h4 class="me-4 mb-0">BolsaEmpleo</h4>
-            <nav>
-                <a th:href="@{/empresa/dashboard}"
-                   class="text-white me-3 text-decoration-none fw-bold">
-                    Dashboard
-                </a>
-                <a th:href="@{/empresa/puestos}"
-                   class="text-white-50 me-3 text-decoration-none">
-                    Mis puestos
-                </a>
-                <a th:href="@{/empresa/puestos/nuevo}"
-                   class="text-white-50 text-decoration-none">
-                    Publicar puesto
-                </a>
-            </nav>
-        </div>
-
-        <div class="d-flex align-items-center">
-            <!-- empresa.nombre viene del model.addAttribute("empresa", empresa) -->
-            <span class="me-3" th:text="${empresa.nombre}">Nombre empresa</span>
-            <form th:action="@{/logout}" method="post" class="mb-0">
-                <button type="submit" class="btn btn-outline-light btn-sm">Salir</button>
-            </form>
-        </div>
-
-    </div>
-</header>
-
-<!-- ── CONTENIDO ───────────────────────────────────────── -->
 <div class="container mt-5 flex-grow-1">
     <div class="bg-light p-5 rounded">
 
         <h1>Empresa - Dashboard</h1>
 
-        <!-- Muestra el nombre de la empresa logueada -->
         <p class="lead">
             Bienvenido, <strong th:text="${empresa.nombre}">Empresa</strong>.
             Desde aquí podés administrar tus puestos y buscar candidatos.
@@ -69,14 +36,7 @@
     </div>
 </div>
 
-<!-- ── FOOTER ──────────────────────────────────────────── -->
-<footer class="bg-dark text-white p-3 mt-auto text-center">
-    <div class="container">
-        <span class="me-3">Bolsa de Empleo - Total Soft Inc.</span> |
-        <span class="mx-3">Contacto: info@bolsaempleo.local</span> |
-        <span class="ms-3">Créditos: Equipo de desarrollo</span>
-    </div>
-</footer>
+<footer th:replace="~{fragments/footer-interno :: footer-interno}"></footer>
 
 </body>
 </html>

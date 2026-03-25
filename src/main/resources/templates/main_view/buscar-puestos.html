@@ -11,19 +11,7 @@
 </head>
 <body>
 
-<!-- HEADER igual al de login/View.html -->
-<header class="bg-dark text-white p-3">
-    <div class="container d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">BolsaEmpleo</h4>
-        <nav>
-            <a th:href="@{/buscar-puestos}" class="text-white me-3 text-decoration-none">Buscar puestos</a>
-            <a th:href="@{/RegistroEmpresa}" class="text-white me-3 text-decoration-none">Registro Empresa</a>
-            <a th:href="@{/RegistroOferente}" class="text-white me-3 text-decoration-none">Registro Oferente</a>
-            <a href="/" class="text-white me-3 text-decoration-none">Pagina Principal</a>
-            <a th:href="@{/login}" class="btn btn-light btn-sm">Login</a>
-        </nav>
-    </div>
-</header>
+<header th:replace="~{fragments/header-publico :: header-publico}"></header>
 
 <div class="container mt-4 flex-grow-1">
     <h3>Buscar puestos por características</h3>
@@ -78,13 +66,7 @@
     </div>
 </div>
 
-<footer class="bg-dark text-white p-3 mt-auto text-center">
-    <div class="container">
-        <span>Bolsa de Empleo - Total Soft Inc.</span> |
-        <span>Contacto: info@bolsaempleo.local</span> |
-        <span>Créditos: Equipo de desarrollo</span>
-    </div>
-</footer>
+<footer th:replace="~{fragments/footer-publico :: footer-publico}"></footer>
 
 </body>
 </html>

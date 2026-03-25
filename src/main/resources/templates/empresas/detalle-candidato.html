@@ -10,27 +10,8 @@
 </head>
 <body>
 
-<!-- NAVBAR -->
-<header class="bg-dark text-white p-3">
-  <div class="container d-flex justify-content-between align-items-center">
-    <div class="d-flex align-items-center">
-      <h4 class="me-4 mb-0">BolsaEmpleo</h4>
-      <nav>
-        <a th:href="@{/empresa/dashboard}"     class="text-white-50 me-3 text-decoration-none">Dashboard</a>
-        <a th:href="@{/empresa/puestos}"       class="text-white me-3 text-decoration-none fw-bold">Mis puestos</a>
-        <a th:href="@{/empresa/puestos/nuevo}" class="text-white-50 text-decoration-none">Publicar puesto</a>
-      </nav>
-    </div>
-    <div class="d-flex align-items-center">
-      <span class="me-3" th:text="${empresa.nombre}"></span>
-      <form th:action="@{/logout}" method="post" class="mb-0">
-        <button type="submit" class="btn btn-outline-light btn-sm">Salir</button>
-      </form>
-    </div>
-  </div>
-</header>
+<header th:replace="~{fragments/header-empresa :: header-empresa}"></header>
 
-<!-- CONTENIDO -->
 <div class="container mt-4 flex-grow-1">
 
   <h2>Detalle de oferente</h2>
@@ -51,7 +32,6 @@
     </div>
   </div>
 
-  <!-- Habilidades -->
   <h5>Habilidades</h5>
   <table class="table table-bordered table-sm w-50 mb-4">
     <thead class="table-secondary">
@@ -71,7 +51,6 @@
     </tbody>
   </table>
 
-  <!-- CV -->
   <div th:if="${oferente.cvRuta != null}" class="mb-3">
     <a th:href="@{/empresa/candidatos/cv/{id}(id=${oferente.id})}"
        class="btn btn-outline-primary">
@@ -86,14 +65,7 @@
      class="btn btn-secondary">Volver</a>
 </div>
 
-<!-- FOOTER -->
-<footer class="bg-dark text-white p-3 mt-auto text-center">
-  <div class="container">
-    <span class="me-3">Bolsa de Empleo - Total Soft Inc.</span> |
-    <span class="mx-3">Contacto: info@bolsaempleo.local</span> |
-    <span class="ms-3">Créditos: Equipo de desarrollo</span>
-  </div>
-</footer>
+<footer th:replace="~{fragments/footer-interno :: footer-interno}"></footer>
 
 </body>
 </html>

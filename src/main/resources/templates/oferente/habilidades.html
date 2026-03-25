@@ -1,4 +1,4 @@
-<<!DOCTYPE html>
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
@@ -14,7 +14,6 @@
             color: white; font-weight: bold; font-size: 13px; margin-right: 8px;
         }
 
-        /* Paneles verdes iguales a la imagen */
         .panel-verde {
             background: #f0fdf4;
             border: 1px solid #bbf7d0;
@@ -23,7 +22,6 @@
             height: 100%;
         }
 
-        /* Tabla de habilidades registradas */
         .tbl-hab th {
             font-weight: 700;
             font-size: 0.85rem;
@@ -36,7 +34,6 @@
         }
         .tbl-hab tbody tr:hover td { background: #e8f5e9; }
 
-        /* Botones del breadcrumb */
         .btn-ruta {
             display: inline-block;
             padding: 2px 10px;
@@ -50,7 +47,6 @@
         }
         .btn-ruta:hover { background: #e9ecef; color: #000; }
 
-        /* Fila de subcategoría con botón Entrar */
         .subcat-row {
             display: flex;
             justify-content: space-between;
@@ -66,35 +62,14 @@
 </head>
 <body>
 
-<!-- ── NAVBAR ── -->
-<header class="bg-dark text-white py-2">
-    <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
-        <div class="d-flex align-items-center">
-            <span class="nav-brand-logo">BE</span>
-            <span class="fw-bold me-4 small">BolsaEmpleo</span>
-            <nav class="d-flex gap-3">
-                <a th:href="@{/oferente/dashboard}" class="text-white-50 text-decoration-none small">Dashboard</a>
-                <a th:href="@{/oferente/habilidad}"  class="text-white  text-decoration-none small fw-semibold">Mis habilidades</a>
-                <a th:href="@{/oferente/CV}"          class="text-white-50 text-decoration-none small">Mi CV</a>
-            </nav>
-        </div>
-        <div class="d-flex align-items-center gap-3">
-            <span class="small" th:text="${adminEmail}">jsanchez@sanchez.com</span>
-            <form th:action="@{/logout}" method="post" class="mb-0">
-                <button type="submit" class="btn btn-outline-light btn-sm">Salir</button>
-            </form>
-        </div>
-    </div>
-</header>
+<header th:replace="~{fragments/header-oferente :: header-oferente}"></header>
 
-<!-- ── CONTENIDO ── -->
 <div class="container-fluid px-4 mt-4 flex-grow-1">
 
     <h5 class="mb-3">Mis habilidades</h5>
 
     <div class="row g-3 align-items-start">
 
-        <!-- ══ PANEL 1: habilidades ya registradas ══ -->
         <div class="col-md-3">
             <div class="panel-verde">
                 <table class="table table-borderless tbl-hab mb-0 w-100">
@@ -105,7 +80,6 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <!--/* misHabilidades viene del controller: List<OferenteHabilidad> */-->
                     <tr th:each="h : ${misHabilidades}">
                         <td th:text="${h.idCaracteristica.nombre}">Característica</td>
                         <td class="text-end" th:text="${h.nivel}">3</td>
@@ -120,11 +94,9 @@
             </div>
         </div>
 
-        <!-- ══ PANEL 2: árbol de categorías ══ -->
         <div class="col-md-5">
             <div class="panel-verde">
 
-                <!-- Ruta (breadcrumb) -->
                 <div class="mb-2 d-flex align-items-center flex-wrap gap-1">
                     <span class="small fw-semibold me-1">Ruta:</span>
                     <a th:href="@{/oferente/habilidad}" class="btn-ruta">Raíces</a>
@@ -136,10 +108,8 @@
                     </span>
                 </div>
 
-                <!-- Título del nivel actual -->
                 <p class="small mb-2" th:text="${titulo}">Subcategorías de: JUnit</p>
 
-                <!-- Subcategorías navegables -->
                 <div th:each="sub : ${subCategorias}">
                     <div class="subcat-row">
                         <span th:text="${sub.nombre}">Subcategoría</span>
@@ -156,22 +126,14 @@
             </div>
         </div>
 
-        <!-- ══ PANEL 3: Agregar Habilidad ══ -->
         <div class="col-md-4">
             <div class="panel-verde">
                 <h6 class="mb-3 fw-semibold">Agregar Habilidad</h6>
-
-                <!--
-                    POST a /oferente/habilidad/agregar
-                    Parámetros: idCaracteristica (Integer), nivel (Integer), actualId (Integer, oculto)
-                -->
                 <form th:action="@{/oferente/habilidad/agregar}" method="post">
 
-                    <!-- Conserva el nivel del árbol para redirigir al mismo lugar -->
                     <input type="hidden" name="actualId"
                            th:value="${categoriaActual != null ? categoriaActual.id : ''}"/>
 
-                    <!-- Select: todas las características -->
                     <div class="mb-3">
                         <label class="form-label small fw-semibold mb-1">Característica</label>
                         <select name="idCaracteristica" class="form-select form-select-sm" required>
@@ -185,7 +147,6 @@
                         </select>
                     </div>
 
-                    <!-- Nivel 1-5 -->
                     <div class="mb-3">
                         <label class="form-label small fw-semibold mb-1">Nivel (1-5)</label>
                         <input type="number" name="nivel" min="1" max="5" value="4"
@@ -198,22 +159,10 @@
             </div>
         </div>
 
-    </div><!-- /row -->
+    </div>
 </div>
 
-<!-- ── FOOTER ── -->
-<footer class="bg-dark text-white py-3 mt-auto">
-    <div class="container-fluid px-4 d-flex justify-content-between align-items-center">
-        <div>
-            <div class="fw-semibold small">Bolsa de Empleo</div>
-            <div class="text-white-50" style="font-size:0.75rem;">Total Soft Inc.</div>
-        </div>
-        <div class="text-end text-white-50" style="font-size:0.75rem;">
-            <div>Contacto: info@bolsaempleo.local</div>
-            <div>Créditos: Equipo de desarrollo</div>
-        </div>
-    </div>
-</footer>
+<footer th:replace="~{fragments/footer-interno :: footer-interno}"></footer>
 
 </body>
 </html>

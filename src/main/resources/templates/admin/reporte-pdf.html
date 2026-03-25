@@ -58,7 +58,6 @@
     </thead>
     <tbody>
 
-    <!-- Caso: hay puestos -->
     <tr th:each="p, stat : ${puestos}"
         th:class="${stat.even} ? 'par' : ''">
         <td th:text="${p.id}">1</td>
@@ -69,7 +68,6 @@
         <td th:text="${p.fechaRegistro}">2026-01-01</td>
     </tr>
 
-    <!-- Caso: no hay puestos — no se cae, muestra mensaje -->
     <tr th:if="${puestos.isEmpty()}">
         <td colspan="6" class="sin-datos">
             No hay puestos registrados en este mes.

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<header th:fragment="header-publico" class="bg-dark text-white p-3">
+    <div class="container d-flex justify-content-between align-items-center">
+        <a th:href="@{/}" class="text-white text-decoration-none">
+            <h4 class="mb-0">BolsaEmpleo</h4>
+        </a>
+        <nav>
+            <a th:href="@{/}" class="text-white me-3 text-decoration-none">Página Principal</a>
+            <a th:href="@{/buscar-puestos}" class="text-white-50 me-3 text-decoration-none">Buscar Puestos</a>
+            <a th:href="@{/RegistroEmpresa}" class="text-white-50 me-3 text-decoration-none">Registro Empresa</a>
+            <a th:href="@{/RegistroOferente}" class="text-white-50 me-3 text-decoration-none">Registro Oferente</a>
+            <a th:href="@{/login}" class="btn btn-light">Login</a>
+        </nav>
+    </div>
+</header>
+
+</body>
+</html>

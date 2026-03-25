@@ -12,7 +12,7 @@
 </head>
 <body>
 
-<div th:replace="~{fragments/header :: header(adminEmail=${adminEmail})}"></div>
+<header th:replace="~{fragments/header-admin :: header-admin}"></header>
 
 <div class="container content mt-5">
     <h1 class="mb-4">Oferentes Pendientes de Aprobación</h1>
@@ -45,7 +45,7 @@
     </div>
 </div>
 
-<div th:replace="~{fragments/footer :: footer}"></div>
+<footer th:replace="~{fragments/footer-interno :: footer-interno}"></footer>
 
 </body>
 </html>

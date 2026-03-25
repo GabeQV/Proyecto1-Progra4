@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<header th:fragment="header-empresa" class="bg-dark text-white p-3">
+    <div class="container d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">BolsaEmpleo</h4>
+        <nav>
+            <a th:href="@{/empresa/dashboard}" class="text-white me-3 text-decoration-none">Dashboard</a>
+            <a th:href="@{/empresa/puestos}" class="text-white-50 me-3 text-decoration-none">Mis Puestos</a>
+            <a th:href="@{/empresa/puestos/nuevo}" class="text-white-50 text-decoration-none">Publicar Puesto</a>
+        </nav>
+        <div class="d-flex align-items-center">
+            <span class="me-3" th:if="${empresa}" th:text="${empresa.nombre}"></span>
+            <form th:action="@{/logout}" method="post" class="mb-0">
+                <button type="submit" class="btn btn-outline-light btn-sm">Salir</button>
+            </form>
+        </div>
+    </div>
+</header>
+</body>
+</html>

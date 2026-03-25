@@ -12,8 +12,7 @@
 </head>
 <body>
 
-<!-- Usamos un fragmento para no repetir el header y footer en cada página -->
-<div th:replace="~{fragments/header :: header(adminEmail=${adminEmail})}"></div>
+<header th:replace="~{fragments/header-admin :: header-admin}"></header>
 
 <div class="container content mt-5">
   <h1 class="mb-4">Empresas Pendientes de Aprobación</h1>
@@ -26,7 +25,7 @@
     <table class="table table-striped table-hover align-middle">
       <thead class="table-dark">
       <tr>
-        <th>Correo del Usuario</th> <!-- Cambiamos el título de la columna -->
+        <th>Correo del Usuario</th>
         <th class="text-center">Acción</th>
       </tr>
       </thead>
@@ -45,7 +44,7 @@
   </div>
 </div>
 
-<div th:replace="~{fragments/footer :: footer}"></div>
+<footer th:replace="~{fragments/footer-interno :: footer-interno}"></footer>
 
 </body>
 </html>

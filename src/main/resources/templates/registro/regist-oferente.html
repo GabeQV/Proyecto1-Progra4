@@ -13,14 +13,9 @@
         .footer { background-color: #343a40; color: white; position: fixed; bottom: 0; width: 100%; }
     </style>
 </head>
-<header class="header p-3">
-    <div class="container d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">Bolsa de Empleo</h4>
-        <nav>
-            <a href="/" class="text-white me-3 text-decoration-none">Pagina Principal</a>
-        </nav>
-    </div>
-</header>
+
+<header th:replace="~{fragments/header-publico :: header-publico}"></header>
+
 <body class="bg-light">
 
 <div class="container" style="max-width: 560px; padding-top: 60px; padding-bottom: 60px;">
@@ -194,13 +189,8 @@
         </div>
     </div>
 </div>
-<footer class="footer p-3 mt-5 text-center">
-    <div class="container">
-        <span>Bolsa de Empleo - Total Soft Inc.</span> |
-        <span>Contacto: info@bolsaempleo.local</span> |
-        <span>Créditos: Equipo de desarrollo</span>
-    </div>
-</footer>
+
+<footer th:replace="~{fragments/footer-publico :: footer-publico}"></footer>
 
 </body>
 </html>

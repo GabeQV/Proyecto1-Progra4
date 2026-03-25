@@ -50,28 +50,8 @@
 </head>
 <body>
 
-<!-- NAVBAR -->
-<header class="bg-dark text-white p-2">
-    <div class="container d-flex justify-content-between align-items-center">
-        <div class="d-flex align-items-center">
-            <span class="nav-brand-logo">BE</span>
-            <span class="fw-bold me-4">BolsaEmpleo</span>
-            <nav>
-                <a th:href="@{/oferente/dashboard}" class="text-white-50 me-3 text-decoration-none">Dashboard</a>
-                <a th:href="@{/oferente/habilidad}" class="text-white-50 me-3 text-decoration-none">Mis Habilidades</a>
-                <a th:href="@{/oferente/CV}" class="text-white me-3 text-decoration-none fw-bold">Mi CV</a>
-            </nav>
-        </div>
-        <div class="d-flex align-items-center">
-            <span class="me-3 small" th:text="${oferente.usuario.correo}">jsanchez@correo.com</span>
-            <form th:action="@{/logout}" method="post" class="mb-0">
-                <button type="submit" class="btn btn-outline-light btn-sm">Salir</button>
-            </form>
-        </div>
-    </div>
-</header>
+<header th:replace="~{fragments/header-oferente :: header-oferente}"></header>
 
-<!-- CONTENIDO -->
 <div class="container mt-4 flex-grow-1">
 
     <h4 class="mb-4">Mi CV</h4>
@@ -85,12 +65,10 @@
 
     <div class="row g-4">
 
-        <!-- CV actual -->
         <div class="col-md-5">
             <div class="panel-upload h-100">
                 <h6 class="mb-3">CV actual</h6>
 
-                <!-- Tiene CV -->
                 <div th:if="${oferente.cvRuta != null}">
                     <div class="cv-card mb-3">
                         <span class="pdf-icon">📄</span>
@@ -99,13 +77,11 @@
                         </div>
                     </div>
                     <div class="d-flex gap-2">
-                        <!-- Descargar — un link simple, sin form -->
                         <a th:href="@{/oferente/CV/descargar}"
                            class="btn btn-outline-primary btn-sm">
                             Descargar
                         </a>
 
-                        <!-- Eliminar — un form simple, sin anidar -->
                         <form th:action="@{/oferente/CV/eliminar}" method="post">
                             <button type="submit"
                                     class="btn btn-outline-danger btn-sm">
@@ -115,7 +91,6 @@
                     </div>
                 </div>
 
-                <!-- No tiene CV -->
                 <div th:if="${oferente.cvRuta == null}">
                     <div class="text-center text-muted py-4">
                         <span style="font-size:2.5rem;">📭</span>
@@ -126,7 +101,6 @@
             </div>
         </div>
 
-        <!-- Formulario subida -->
         <div class="col-md-7">
             <div class="panel-upload">
                 <h6 class="mb-3">
@@ -157,19 +131,7 @@
     </div>
 </div>
 
-<!-- FOOTER -->
-<footer class="bg-dark text-white p-3 mt-auto">
-    <div class="container d-flex justify-content-between align-items-start">
-        <div>
-            <div class="fw-bold">Bolsa de Empleo</div>
-            <div class="small text-white-50">Total Soft Inc.</div>
-        </div>
-        <div class="text-end small text-white-50">
-            <div>Contacto: info@bolsaempleo.local</div>
-            <div>Créditos: Equipo de desarrollo</div>
-        </div>
-    </div>
-</footer>
+<footer th:replace="~{fragments/footer-interno :: footer-interno}"></footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

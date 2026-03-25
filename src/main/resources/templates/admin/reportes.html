@@ -11,7 +11,7 @@
 </head>
 <body>
 
-<div th:replace="~{fragments/header :: header(adminEmail=${adminEmail})}"></div>
+<header th:replace="~{fragments/header-admin :: header-admin}"></header>
 
 <div class="container mt-4 flex-grow-1">
     <h3>Reportes</h3>
@@ -26,10 +26,6 @@
                 <div class="mb-3">
                     <label class="form-label">Mes</label>
                     <select name="mes" class="form-select">
-                        <!--
-                            iterStat.index va de 0 a 11
-                            el value es index+1 para que sea 1-12
-                        -->
                         <option th:each="nombre, iterStat : ${meses}"
                                 th:value="${iterStat.index + 1}"
                                 th:text="${nombre}">
@@ -56,7 +52,7 @@
     </div>
 </div>
 
-<div th:replace="~{fragments/footer :: footer}"></div>
+<footer th:replace="~{fragments/footer-interno :: footer-interno}"></footer>
 
 </body>
 </html>
