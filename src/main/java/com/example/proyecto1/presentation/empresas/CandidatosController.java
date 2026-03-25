@@ -21,7 +21,6 @@ import java.security.Principal;
 import java.util.List;
 
 @Controller
-@RequestMapping("/empresa")
 public class CandidatosController {
 
     private final Service service;
@@ -31,7 +30,7 @@ public class CandidatosController {
     }
 
     // GET /empresa/candidatos?puestoId=X
-    @GetMapping("/candidatos")
+    @GetMapping("/empresa/candidatos")
     public String buscarCandidatos(
             @RequestParam Integer puestoId,
             Model model,
@@ -49,7 +48,8 @@ public class CandidatosController {
     }
 
     // GET /empresa/candidatos/{idOferente}  — detalle
-    @GetMapping("/candidatos/{idOferente}")
+    @GetMapping("/empresa/candidatos/{idOferente}")
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public String verDetalleCandidato(
             @PathVariable String idOferente,
             @RequestParam Integer puestoId,
@@ -68,7 +68,7 @@ public class CandidatosController {
         return "empresas/detalle-candidato";
     }
 
-    @GetMapping("/candidatos/cv/{idOferente}")
+    @GetMapping("/empresa/candidatos/cv/{idOferente}")
     public ResponseEntity<Resource> descargarCVCandidato(
             @PathVariable String idOferente) {
         try {
