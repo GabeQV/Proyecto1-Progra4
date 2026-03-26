@@ -48,13 +48,13 @@
                            class="form-control"
                            id="id"
                            name="id"
-                           placeholder="Ej: 123456789"
+                           placeholder="Ej: 12345678"
                            required
                            minlength="5"
                            maxlength="20"
-                           pattern="[0-9]+"
-                           title="Solo números. Mínimo 5 dígitos">
-                    <div class="form-text">Solo números. Ej: 123456789</div>
+                           pattern="^[A-Za-z0-9]+$"
+                           title="Letras y números permitidos, sin espacios. Minimo 5 caracteres">
+                    <div class="form-text">Letras y números permitidos. Ej: A12345 o 12345678</div>
                 </div>
 
                 <div class="mb-3">
@@ -162,9 +162,10 @@
                                id="residencia"
                                name="residencia"
                                required
-                               minlength="3"
+                               pattern="^[^0-9]*$"
+                               minlength="6"
                                maxlength="40"
-                               title="Ingrese su lugar de residencia.">
+                               title="La residencia no puede contener números. Ejemplo: San José">
                         <div class="form-text">Ejemplo: San José</div>
                     </div>
                 </div>
