@@ -35,8 +35,6 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/login")
                         .loginProcessingUrl("/login")
-                        // Le decimos a Spring que el campo del form que tiene el correo
-                        // se llama "username" (nombre por defecto, ya coincide con el HTML)
                         .usernameParameter("username")
                         .passwordParameter("password")
                         .successHandler(customAuthenticationSuccessHandler)

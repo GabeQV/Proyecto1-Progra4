@@ -25,13 +25,11 @@ public class ReporteController {
     private final Service service;
     private final TemplateEngine templateEngine;
 
-    // Spring inyecta ambos automáticamente
     public ReporteController(Service service, TemplateEngine templateEngine) {
         this.service = service;
         this.templateEngine = templateEngine;
     }
 
-    // GET /admin/reportes — muestra el formulario
     @GetMapping
     public String mostrarFormulario(Model model, Principal principal) {
         Usuario admin = service.buscarUsuarioPorId(principal.getName()).orElse(null);
@@ -41,7 +39,6 @@ public class ReporteController {
         return "admin/reportes";
     }
 
-    // GET /admin/reportes/descargar?mes=3&anio=2026 — genera el PDF
     @GetMapping("/descargar")
     public void descargarPDF(
             @RequestParam int mes,
@@ -49,12 +46,10 @@ public class ReporteController {
             Principal principal,
             HttpServletResponse response) throws Exception {
 
-        // 1. Datos desde la VIEW — una sola línea
         List<ReportePuesto> puestos = service.getReportePorMes(mes, anio);
 
         Usuario admin = service.buscarUsuarioPorId(principal.getName()).orElse(null);
 
-        // 2. Context es el Model manual para usar TemplateEngine directamente
         Context context = new Context();
         context.setVariable("puestos", puestos);
         context.setVariable("mes", mes);
@@ -62,17 +57,14 @@ public class ReporteController {
         context.setVariable("nombreMes", service.getNombresMeses().get(mes - 1));
         context.setVariable("adminEmail", admin != null ? admin.getCorreo() : "");
 
-        // 3. Thymeleaf convierte el template a String HTML
         String html = templateEngine.process("admin/reporte-pdf", context);
 
-        // 4. Flying Saucer convierte ese HTML a PDF
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ITextRenderer renderer = new ITextRenderer();
         renderer.setDocumentFromString(html);
         renderer.layout();
         renderer.createPDF(baos);
 
-        // 5. Se envía al navegador como descarga
         response.setContentType("application/pdf");
         response.setHeader("Content-Disposition",
                 "attachment; filename=\"reporte-" + mes + "-" + anio + ".pdf\"");

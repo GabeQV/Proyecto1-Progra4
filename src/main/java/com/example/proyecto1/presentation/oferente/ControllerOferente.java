@@ -31,7 +31,6 @@ public class ControllerOferente {
         this.service = service;
     }
 
-    // ── Registro ─────────────────────────────────────────────────────────────
     @GetMapping("/RegistroOferente")
     public String Ofer_register() {
         return "registro/regist-oferente";
@@ -61,7 +60,6 @@ public class ControllerOferente {
         }
     }
 
-    // ── Dashboard ─────────────────────────────────────────────────────────────
     @GetMapping("/oferente/dashboard")
     public String dashboard(Model model, Principal principal) {
         Oferente oferente = service.buscarPorIdOf(principal.getName());
@@ -69,7 +67,6 @@ public class ControllerOferente {
         return "oferente/dashboard";
     }
 
-    // ── CV: mostrar página ────────────────────────────────────────────────────
     @GetMapping("/oferente/CV")
     public String verCV(Model model, Principal principal) {
         Oferente oferente = service.buscarPorIdOf(principal.getName());
@@ -77,7 +74,6 @@ public class ControllerOferente {
         return "oferente/CV";
     }
 
-    // ── CV: subir / reemplazar ────────────────────────────────────────────────
     @PostMapping("/oferente/CV/subir")
     public String subirCV(
             @RequestParam("archivo") MultipartFile archivo,
@@ -93,7 +89,6 @@ public class ControllerOferente {
         return "redirect:/oferente/CV";
     }
 
-    // ── CV: descargar ─────────────────────────────────────────────────────────
     @GetMapping("/oferente/CV/descargar")
     public ResponseEntity<Resource> descargarCV(Principal principal) {
         try {
@@ -103,7 +98,6 @@ public class ControllerOferente {
                 return ResponseEntity.notFound().build();
             }
 
-            // Usar ruta absoluta igual que en guardarCV
             Path rutaArchivo = Paths.get(uploadDir)
                     .toAbsolutePath()
                     .normalize()
@@ -126,7 +120,6 @@ public class ControllerOferente {
         }
     }
 
-    // ── CV: eliminar ──────────────────────────────────────────────────────────
     @PostMapping("/oferente/CV/eliminar")
     public String eliminarCV(Principal principal, RedirectAttributes redirectAttrs) {
         try {
