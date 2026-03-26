@@ -63,6 +63,23 @@ public class Service {
         if (usuarioRepo.existsById(id)) {
             throw new IllegalArgumentException("Ya existe un usuario con esa identificación.");
         }
+
+        if (id == null || !id.matches("^[a-zA-Z0-9]+$")) {
+            throw new IllegalArgumentException("La identificación solo puede contener letras y números, sin espacios.");
+        }
+
+        if (id.length() > 20) {
+            throw new IllegalArgumentException("La identificación no puede tener más de 20 caracteres.");
+        }
+
+        if (residencia == null || residencia.trim().isEmpty()) {
+            throw new IllegalArgumentException("La residencia es obligatoria.");
+        }
+
+        if (residencia.matches(".*\\d.*")) {
+            throw new IllegalArgumentException("La residencia no debe contener números.");
+        }
+
         Usuario usuario = new Usuario();
         usuario.setId(id);
         usuario.setCorreo(correo);
@@ -112,7 +129,13 @@ public class Service {
         if (contentType == null || !contentType.equals("application/pdf")) {
             throw new IllegalArgumentException("Solo se permiten archivos PDF.");
         }
-        if (archivo.getSize() > 5L * 1024 * 1024) {
+
+        String original = archivo.getOriginalFilename();
+        if (original == null || !original.toLowerCase().endsWith(".pdf")) {
+            throw new IllegalArgumentException("El archivo debe tener extensión .pdf");
+        }
+
+        if (archivo.getSize() > 3L * 1024 * 1024) {
             throw new IllegalArgumentException("El archivo supera los 5 MB permitidos.");
         }
         Oferente oferente = oferenteRepo.findById(idOferente)
