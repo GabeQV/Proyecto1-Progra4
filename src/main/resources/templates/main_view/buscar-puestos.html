@@ -36,7 +36,12 @@
 </head>
 <body class="d-flex flex-column h-100">
 
-<header th:replace="~{fragments/header-publico :: header-publico}"></header>
+<th:block th:if="${esOferente}">
+    <div th:replace="~{fragments/header-oferente :: header}"></div>
+</th:block>
+<th:block th:unless="${esOferente}">
+    <div th:replace="~{fragments/header-publico :: header}"></div>
+</th:block>
 
 <div class="content-wrapper">
     <div class="container py-5">

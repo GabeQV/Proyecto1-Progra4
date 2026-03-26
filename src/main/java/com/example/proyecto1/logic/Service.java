@@ -233,7 +233,31 @@ public class Service {
         if (ids == null || ids.isEmpty()) {
             return new ArrayList<>();
         }
-        return puestoRepository.findPuestosPublicosPorCaracteristicas(ids);
+        List<Integer> idsExpandidos = expandirCaracteristicas(ids);
+        return puestoRepository.findPuestosPublicosPorCaracteristicas(idsExpandidos);
+    }
+
+    public List<Puesto> BuscarPuestos(List<Integer> ids) {
+        if (ids == null || ids.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<Integer> idsExpandidos = expandirCaracteristicas(ids);
+        return puestoRepository.findPuestosPorCaracteristicas(idsExpandidos);
+    }
+    
+    private List<Integer> expandirCaracteristicas(List<Integer> ids) {
+        List<Integer> idsExpandidos = new ArrayList<>();
+        for (Integer id : ids) {
+            List<Caracteristica> hijos = caracteristicaRepository.findByIdPadre_Id(id);
+            if (!hijos.isEmpty()) {
+                for (Caracteristica hijo : hijos) {
+                    idsExpandidos.add(hijo.getId());
+                }
+            } else {
+                idsExpandidos.add(id);
+            }
+        }
+        return idsExpandidos;
     }
 
     @Transactional
