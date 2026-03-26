@@ -52,6 +52,7 @@
         <th>Empresa</th>
         <th>Descripcion</th>
         <th>Salario</th>
+        <th>Moneda</th>
         <th>Tipo</th>
         <th>Fecha</th>
     </tr>
@@ -64,12 +65,13 @@
         <td th:text="${p.empresa}">Empresa</td>
         <td th:text="${p.descripcion}">Descripcion</td>
         <td th:text="${p.salario}">0</td>
+        <td th:text="${p.moneda}">USD</td>
         <td th:text="${p.tipoPuesto}">publico</td>
         <td th:text="${p.fechaRegistro}">2026-01-01</td>
     </tr>
 
     <tr th:if="${puestos.isEmpty()}">
-        <td colspan="6" class="sin-datos">
+        <td colspan="7" class="sin-datos">
             No hay puestos registrados en este mes.
         </td>
     </tr>

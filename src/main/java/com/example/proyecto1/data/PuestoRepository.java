@@ -23,6 +23,14 @@ public interface PuestoRepository extends CrudRepository<Puesto,Integer> {
             "AND req_pc.idCaracteristica.id IN :ids")
     List<Puesto> findPuestosPublicosPorCaracteristicas(@Param("ids") List<Integer> ids);
 
+    @Query("SELECT DISTINCT p FROM Puesto p " +
+            "LEFT JOIN FETCH p.caracteristicas pc " +
+            "LEFT JOIN pc.idCaracteristica " +
+            "JOIN p.caracteristicas req_pc " +
+            "WHERE p.activo = true " +
+            "AND req_pc.idCaracteristica.id IN :ids")
+    List<Puesto> findPuestosPorCaracteristicas(@Param("ids") List<Integer> ids);
+
 
 
 }

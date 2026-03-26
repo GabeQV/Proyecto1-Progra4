@@ -8,6 +8,7 @@
             <a th:href="@{/oferente/dashboard}" class="text-white me-3 text-decoration-none">Dashboard</a>
             <a th:href="@{/oferente/habilidad}" class="text-white-50 me-3 text-decoration-none">Mis Habilidades</a>
             <a th:href="@{/oferente/CV}" class="text-white-50 text-decoration-none">Mi CV</a>
+            <a th:href="@{/buscar-puestos}" class="text-white-50 me-3 text-decoration-none">Buscar Puestos</a>
         </nav>
         <div class="d-flex align-items-center">
             <span class="me-3" th:if="${oferente}" th:text="${oferente.nombre + ' ' + oferente.primerApellido}"></span>

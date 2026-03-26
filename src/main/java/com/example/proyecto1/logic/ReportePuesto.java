@@ -38,4 +38,7 @@ public class ReportePuesto {
 
     @Column(name = "anio")
     private Integer anio;
+
+    @Column(name = "moneda")
+    private String moneda;
 }
