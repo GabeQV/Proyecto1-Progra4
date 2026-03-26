@@ -10,19 +10,13 @@
         body { display: flex; flex-direction: column; background-color: #f8f9fa; }
         .content-wrapper { flex: 1 0 auto; }
 
-        .job-card { position: relative; }
         .job-card .job-details {
             display: none;
-            position: absolute;
-            top: 0;
-            left: 102%;
-            width: 300px;
+            margin-top: 1rem;
             padding: 1rem;
-            background: #fff;
+            background: #f8f9fa;
             border: 1px solid #ddd;
             border-radius: .5rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            z-index: 10;
         }
         .job-card:hover .job-details {
             display: block;
