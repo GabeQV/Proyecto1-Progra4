@@ -29,7 +29,6 @@ public class CandidatosController {
         this.service = service;
     }
 
-    // GET /empresa/candidatos?puestoId=X
     @GetMapping("/empresa/candidatos")
     public String buscarCandidatos(
             @RequestParam Integer puestoId,
@@ -47,7 +46,6 @@ public class CandidatosController {
         return "empresas/candidatos";
     }
 
-    // GET /empresa/candidatos/{idOferente}  — detalle
     @GetMapping("/empresa/candidatos/{idOferente}")
     @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public String verDetalleCandidato(

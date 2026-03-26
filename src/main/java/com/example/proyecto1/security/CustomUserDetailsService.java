@@ -24,7 +24,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional(readOnly = true)
     public UserDetails loadUserByUsername(String correo) throws UsernameNotFoundException {
-        // Buscar por correo (login con correo)
         Usuario usuario = usuarioRepository.findByCorreo(correo)
                 .orElseThrow(() -> new UsernameNotFoundException("No se encontró el usuario con correo: " + correo));
 
@@ -33,9 +32,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         boolean accountNonLocked = usuario.getActivo() != null && usuario.getActivo();
 
-        // IMPORTANTE: el primer parámetro es el ID (cédula), no el correo.
-        // Así principal.getName() en los controllers devuelve el id,
-        // y findById() en guardarCV/dashboard sigue funcionando sin cambios.
         return new User(
                 usuario.getId(),
                 usuario.getClave(),
