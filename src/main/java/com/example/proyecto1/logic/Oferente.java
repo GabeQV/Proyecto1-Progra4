@@ -10,6 +10,18 @@ import lombok.Setter;
 @Entity
 @Table(name = "oferente")
 public class Oferente {
+
+    public Oferente(String nombre, String primerApellido, String segundoApellido, String nacionalidad, String telefono, String residencia, Boolean aprobado) {
+        this.nombre = nombre;
+        this.primerApellido = primerApellido;
+        this.segundoApellido = segundoApellido;
+        this.nacionalidad = nacionalidad;
+        this.telefono = telefono;
+        this.residencia = residencia;
+        this.aprobado = aprobado;
+    }
+    public Oferente() {}
+
     @Id
     @Size(max = 20)
     @Column(name = "id", nullable = false, length = 20)

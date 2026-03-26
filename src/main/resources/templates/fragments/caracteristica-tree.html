@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<ul th:fragment="tree(caracteristicas, level, idsSeleccionados)" class="caracteristicas-list">
+    <li th:each="car : ${caracteristicas}" th:classappend="'level-' + ${level}">
+        <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="ids"
+                   th:value="${car.id}"
+                   th:id="'check' + ${car.id}"
+                   th:checked="${idsSeleccionados.contains(car.id)}">
+            <label class="form-check-label" th:for="'check' + ${car.id}" th:text="${car.nombre}"></label>
+        </div>
+
+        <div th:if="${!car.hijos.isEmpty()}"
+             th:replace="~{fragments/caracteristica-tree :: tree(caracteristicas=${car.hijos}, level=${level + 1}, idsSeleccionados=${idsSeleccionados})}">
+        </div>
+    </li>
+</ul>
+
+</body>
+</html>

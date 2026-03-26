@@ -8,19 +8,17 @@
     <style>
         body { display: flex; flex-direction: column; min-height: 100vh; }
 
-        /* ── Tarjeta de puesto ── */
         .puesto-card {
-            position: relative;   /* necesario para que el tooltip se posicione respecto a la tarjeta */
+            position: relative;
             cursor: default;
         }
 
-        /* ── Detalle oculto por defecto ── */
         .puesto-detalle {
-            display: none;                  /* invisible normalmente */
-            position: absolute;             /* flota sobre la página, no empuja otros elementos */
-            top: 100%;                      /* aparece justo debajo de la tarjeta */
+            display: none;
+            position: absolute;
+            top: 100%;
             left: 0;
-            z-index: 100;                   /* queda por encima de otras tarjetas */
+            z-index: 100;
             background: white;
             border: 1px solid #ccc;
             border-radius: 6px;
@@ -29,9 +27,8 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
-        /* ── Al hacer hover sobre la tarjeta, mostrar el detalle ── */
         .puesto-card:hover .puesto-detalle {
-            display: block;                 /* aparece solo con CSS, sin JavaScript */
+            display: block;
         }
     </style>
 </head>
@@ -62,12 +59,10 @@
                         <span th:text="${p.salario}"></span>
                     </strong>
 
-                    <!-- Este div está DENTRO de .puesto-card -->
-                    <!-- CSS lo muestra solo cuando hay hover en la tarjeta padre -->
+
                     <div class="puesto-detalle">
                         <strong th:text="${p.descripcion}">Puesto</strong>
                         <ul class="mt-2 mb-0 ps-3">
-                            <!-- Itera las características requeridas del puesto -->
                             <li th:each="pc : ${p.caracteristicas}"
                                 th:text="${pc.idCaracteristica.nombre}
                                          + ' (nivel ' + ${pc.nivelRequerido} + ')'">

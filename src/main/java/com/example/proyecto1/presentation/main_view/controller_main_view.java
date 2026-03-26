@@ -1,11 +1,13 @@
 package com.example.proyecto1.presentation.main_view;
 
+import com.example.proyecto1.logic.Caracteristica;
 import com.example.proyecto1.logic.Service;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Collections;
 import java.util.List;
 
 @Controller
@@ -29,8 +31,9 @@ public class controller_main_view {
             @RequestParam(required = false) List<Integer> ids,
             Model model) {
 
-        model.addAttribute("caracteristicas",
-                service.getCaracteristicasRaiz());
+        model.addAttribute("caracteristicasRaiz", service.getCaracteristicasRaiz());
+
+        model.addAttribute("idsSeleccionados", ids != null ? ids : Collections.emptyList());
 
         if (ids != null && !ids.isEmpty()) {
             model.addAttribute("resultados",
@@ -40,16 +43,3 @@ public class controller_main_view {
         return "main_view/buscar-puestos";
     }
 }
-
-//    @GetMapping("/buscar-puestos")
-//    public String buscarPuestos(
-//            @RequestParam(required = false) List<Integer> idCaracteristicas,
-//            Model model) {
-//        model.addAttribute("caracteristicas", service.getCaracteristicasRaiz());
-//        if (idCaracteristicas != null && !idCaracteristicas.isEmpty()) {
-//            model.addAttribute("resultados",
-//                    service.buscarPuestosPublicosPorCaracteristicas(idCaracteristicas));
-//        }
-//        return "main_view/buscar-puestos"; // nueva vista
-//    }
-

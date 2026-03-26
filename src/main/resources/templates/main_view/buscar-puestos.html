@@ -1,68 +1,101 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" class="h-100">
 <head>
     <meta charset="UTF-8">
     <title>Buscar Puestos</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        body { display: flex; flex-direction: column; min-height: 100vh; }
+        html, body { height: 100%; }
+        body { display: flex; flex-direction: column; background-color: #f8f9fa; }
+        .content-wrapper { flex: 1 0 auto; }
+
+        .job-card { position: relative; }
+        .job-card .job-details {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 102%;
+            width: 300px;
+            padding: 1rem;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: .5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10;
+        }
+        .job-card:hover .job-details {
+            display: block;
+        }
+
+        .caracteristicas-list {
+            padding-left: 0;
+            list-style-type: none;
+        }
+        .caracteristicas-list .form-check {
+            padding-left: 1.75rem;
+        }
+        .level-1 { margin-left: 1.5rem; }
+        .level-2 { margin-left: 3rem; }
+        .level-3 { margin-left: 4.5rem; }
     </style>
 </head>
-<body>
+<body class="d-flex flex-column h-100">
 
 <header th:replace="~{fragments/header-publico :: header-publico}"></header>
 
-<div class="container mt-4 flex-grow-1">
-    <h3>Buscar puestos por características</h3>
+<div class="content-wrapper">
+    <div class="container py-5">
 
-    <!-- FORMULARIO DE BÚSQUEDA -->
-    <!-- method="get" para que los ids queden en la URL -->
-    <form th:action="@{/buscar-puestos}" method="get">
-        <div class="border rounded p-3 mb-4">
+        <div class="card p-4 shadow-sm mb-5">
+            <h4 class="mb-3">Buscar puestos por características</h4>
+            <form th:action="@{/buscar-puestos}" method="get">
+                <div th:replace="~{fragments/caracteristica-tree :: tree(caracteristicas=${caracteristicasRaiz}, level=0, idsSeleccionados=${idsSeleccionados})}"></div>
 
-            <!-- th:each itera la lista "caracteristicas" que mandó el controller -->
-            <div th:each="cat : ${caracteristicas}" class="mb-1">
-                <div class="form-check">
-                    <!-- th:value pone el id de la característica como valor del checkbox -->
-                    <!-- th:text pone el nombre visible -->
-                    <input class="form-check-input"
-                           type="checkbox"
-                           name="ids"
-                           th:value="${cat.id}"
-                           th:id="'cat' + ${cat.id}">
-                    <label class="form-check-label"
-                           th:for="'cat' + ${cat.id}"
-                           th:text="${cat.nombre}">
-                    </label>
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Buscar
+                    </button>
+                    <a th:href="@{/buscar-puestos}" class="btn btn-outline-secondary">Limpiar</a>
+                </div>
+            </form>
+        </div>
+
+        <div th:if="${resultados != null}">
+            <h4 class="mb-3">Resultados</h4>
+
+            <div th:if="${resultados.isEmpty()}" class="alert alert-info">
+                No se encontraron puestos que coincidan con las características seleccionadas.
+            </div>
+
+            <div th:unless="${resultados.isEmpty()}" class="list-group">
+                <div th:each="puesto : ${resultados}" class="list-group-item list-group-item-action job-card">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h6 class="mb-1" th:text="${puesto.idEmpresa.nombre}"></h6>
+                        <small class="text-muted" th:text="'Publicado: ' + ${#temporals.format(puesto.fechaRegistro, 'dd-MM-yyyy')}"></small>
+                    </div>
+                    <p class="mb-1" th:text="${puesto.descripcion}"></p>
+                    <strong>
+                        <span th:text="${puesto.moneda}"></span>
+                        <span th:text="${#numbers.formatDecimal(puesto.salario, 1, 'POINT', 2, 'COMMA')}"></span>
+                    </strong>
+
+                    <div class="job-details">
+                        <strong>Requisitos del puesto:</strong>
+                        <ul th:if="${!puesto.caracteristicas.isEmpty()}">
+                            <li th:each="car : ${puesto.caracteristicas}"
+                                th:text="${car.idCaracteristica.nombre} + ' (Nivel ' + ${car.nivelRequerido} + ')'">
+                            </li>
+                        </ul>
+                        <p th:if="${puesto.caracteristicas.isEmpty()}" class="mt-2 small text-muted">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Sin requisitos específicos detallados.
+                        </p>
+                    </div>
+
                 </div>
             </div>
-
         </div>
-
-        <button type="submit" class="btn btn-primary">Buscar</button>
-        <a th:href="@{/buscar-puestos}" class="btn btn-secondary ms-2">Limpiar</a>
-    </form>
-
-    <!-- RESULTADOS — solo se muestran si el controller puso "resultados" en el model -->
-    <div th:if="${resultados != null}">
-        <h5 class="mt-4">Resultados</h5>
-
-        <div th:if="${resultados.isEmpty()}" class="alert alert-info">
-            No se encontraron puestos con esas características.
-        </div>
-
-        <!-- th:each itera cada puesto encontrado -->
-        <div th:each="p : ${resultados}" class="card mb-2">
-            <div class="card-body">
-                <!-- p.idEmpresa es el objeto Empresa relacionado -->
-                <h6 th:text="${p.idEmpresa.nombre}">Empresa</h6>
-                <p th:text="${p.descripcion}" class="mb-1">Descripción</p>
-                <span class="text-muted">Salario: </span>
-                <span th:text="${p.salario}">0</span>
-            </div>
-        </div>
-
     </div>
 </div>
 

@@ -14,6 +14,18 @@ import java.util.List;
 @Entity
 @Table(name = "puesto")
 public class Puesto {
+
+    public Puesto(Empresa idEmpresa, String descripcion, Double salario, String tipoPuesto, Boolean activo, LocalDate fechaRegistro, String moneda) {
+        this.idEmpresa = idEmpresa;
+        this.descripcion = descripcion;
+        this.salario = salario;
+        this.tipoPuesto = tipoPuesto;
+        this.activo = activo;
+        this.fechaRegistro = fechaRegistro;
+        this.moneda = moneda;
+    }
+    public Puesto() {}
+
     @OneToMany(mappedBy = "idPuesto", fetch = FetchType.LAZY)
     private List<PuestoCaracteristica> caracteristicas = new ArrayList<>();
 

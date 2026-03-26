@@ -6,11 +6,24 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
 @Table(name = "caracteristica")
 public class Caracteristica {
+
+    public Caracteristica(String nombre, Caracteristica idPadre) {
+        this.nombre = nombre;
+        this.idPadre = idPadre;
+    }
+    public Caracteristica(String nombre) {
+        this.nombre = nombre;
+    }
+    public Caracteristica() {}
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_caracteristica", nullable = false)
@@ -25,5 +38,6 @@ public class Caracteristica {
     @JoinColumn(name = "id_padre")
     private Caracteristica idPadre;
 
-
+    @OneToMany(mappedBy = "idPadre", fetch = FetchType.EAGER)
+    private List<Caracteristica> hijos = new ArrayList<>();
 }

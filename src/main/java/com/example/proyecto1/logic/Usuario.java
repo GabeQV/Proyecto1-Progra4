@@ -10,6 +10,16 @@ import lombok.Setter;
 @Entity
 @Table(name = "usuario")
 public class Usuario {
+
+    public Usuario(String id, String correo, String clave, String rolUsuario, Boolean activo) {
+        this.id = id;
+        this.correo = correo;
+        this.clave = clave;
+        this.rolUsuario = rolUsuario;
+        this.activo = activo;
+    }
+    public Usuario() {}
+
     @Id
     @Size(max = 20)
     @Column(name = "id", nullable = false, length = 20)
