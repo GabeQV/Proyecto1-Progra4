@@ -32,7 +32,6 @@
                 <span th:text="${exito}"></span>
             </div>
 
-            <!-- Mensaje de ERROR — sin botón de cerrar -->
             <div th:if="${error}" class="alert alert-danger" role="alert">
                 <span th:text="${error}"></span>
             </div>
@@ -90,7 +89,6 @@
                     DATOS PERSONALES
                 </p>
 
-                <!-- Nombre -->
                 <div class="mb-3">
                     <label for="nombre" class="form-label">Nombre <span class="text-danger">*</span></label>
                     <input type="text"
@@ -104,7 +102,6 @@
                            title="Solo letras y espacios. Entre 2 y 40 caracteres.">
                 </div>
 
-                <!-- Apellidos -->
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="primerApellido" class="form-label">Primer apellido <span class="text-danger">*</span></label>
@@ -144,7 +141,6 @@
                     <div class="form-text">Ejemplo: Costarricense</div>
                 </div>
 
-                <!-- Teléfono y Residencia -->
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="telefono" class="form-label">Teléfono <span class="text-danger">*</span></label>

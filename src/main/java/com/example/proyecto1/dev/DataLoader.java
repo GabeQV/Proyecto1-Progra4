@@ -34,7 +34,6 @@ public class DataLoader implements CommandLineRunner {
         System.out.println("Cargando datos de prueba...");
         String password = passwordEncoder.encode("123");
 
-        // 1. CREAR CARACTERÍSTICAS JERÁRQUICAS
         System.out.println("Creando características...");
         Caracteristica lprog = createCaracteristica("Lenguajes de Programación", null);
         Caracteristica java = createCaracteristica("Java", lprog);
@@ -53,23 +52,18 @@ public class DataLoader implements CommandLineRunner {
         Caracteristica backend = createCaracteristica("Backend", fw);
         Caracteristica spring = createCaracteristica("Spring Boot", backend);
 
-        // 2. CREAR USUARIOS Y ROLES
         System.out.println("Creando usuarios...");
 
-        // Admin
         createAdmin("admin", "admin@bolsa.com", password);
 
-        // Empresas
         Empresa empresaAprobada = createEmpresa("empresa1", "empresa1@test.com", password, "Tech Solutions Inc.", true);
         Empresa empresaPendiente = createEmpresa("empresa2", "empresa2@test.com", password, "Innovatec", false);
 
-        // Oferentes
         Oferente oferenteAprobado1 = createOferente("oferente1", "oferente1@test.com", password, "Ana", "Gomez", true);
         Oferente oferenteAprobado2 = createOferente("oferente3", "oferente3@test.com", password, "Luis", "Mora", true);
         Oferente oferentePendiente = createOferente("oferente2", "oferente2@test.com", password, "Carlos", "Rojas", false);
 
 
-        // 3. ASIGNAR HABILIDADES A OFERENTES
         System.out.println("Asignando habilidades...");
         addHabilidad(oferenteAprobado1, java, 4);
         addHabilidad(oferenteAprobado1, spring, 3);
@@ -80,7 +74,6 @@ public class DataLoader implements CommandLineRunner {
         addHabilidad(oferenteAprobado2, react, 3);
 
 
-        // 4. CREAR PUESTOS PARA EMPRESAS
         System.out.println("Creando puestos...");
         Puesto p1 = createPuesto(empresaAprobada, "Desarrollador Java Backend", 2500.0, "publico", "$");
         addRequisitoPuesto(p1, java, 3);
@@ -98,7 +91,6 @@ public class DataLoader implements CommandLineRunner {
         System.out.println("Datos de prueba cargados exitosamente.");
     }
 
-    // --- Métodos de ayuda para crear entidades ---
 
     private Caracteristica createCaracteristica(String nombre, Caracteristica padre) {
         Caracteristica c = new Caracteristica();
@@ -129,7 +121,7 @@ public class DataLoader implements CommandLineRunner {
         empresa.setId(id);
         empresa.setNombre(nombre);
         empresa.setAprobado(aprobado);
-        empresa.setUsuario(user); // Vinculación clave
+        empresa.setUsuario(user);
 
         user.setEmpresa(empresa);
         usuarioRepository.save(user);
@@ -149,7 +141,7 @@ public class DataLoader implements CommandLineRunner {
         oferente.setNombre(nombre);
         oferente.setPrimerApellido(apellido);
         oferente.setAprobado(aprobado);
-        oferente.setUsuario(user); // Vinculación clave
+        oferente.setUsuario(user);
 
         user.setOferente(oferente);
         usuarioRepository.save(user);

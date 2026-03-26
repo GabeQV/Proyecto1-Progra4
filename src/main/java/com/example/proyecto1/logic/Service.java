@@ -40,7 +40,7 @@ public class Service {
         this.reportePuestoRepository = rpr;
     }
 
-    // ----------------publico
+    // ── PUBLICO ──────────────────────────────────────────────────────────────
 
 
     public List<Puesto> getTop5PuestosPublicos() {
@@ -238,22 +238,18 @@ public class Service {
 
     @Transactional
     public Puesto crearPuesto(String idEmpresa, String descripcion,
-                              Double salario, String tipoPuesto,String moneda) {  // ← nuevo parámetro
+                              Double salario, String tipoPuesto,String moneda) {
 
-        // ── Validación 1: descripción con al menos una palabra real ──
         if (descripcion == null || descripcion.trim().isEmpty()) {
             throw new IllegalArgumentException(
                     "La descripción no puede estar vacía.");
         }
-        // trim() elimina espacios, split separa por espacios
-        // si no queda ninguna palabra lanza error
         String[] palabras = descripcion.trim().split("\\s+");
         if (palabras.length < 1 || palabras[0].isEmpty()) {
             throw new IllegalArgumentException(
                     "La descripción debe contener al menos una palabra.");
         }
 
-        // ── Validación 2: salario >= 1 ────────────────────────────────
         if (salario == null || salario < 1) {
             throw new IllegalArgumentException(
                     "El salario debe ser mayor o igual a 1.");
@@ -274,10 +270,6 @@ public class Service {
 
         return puestoRepository.save(puesto);
     }
-    /**
-     * Asocia una característica con nivel requerido al puesto indicado.
-     * Guarda en la tabla puesto_caracteristica (no en puesto).
-     */
     @Transactional
     public void agregarCaracteristicaAPuesto(Integer idPuesto, Integer idCaracteristica, Integer nivel) {
         Puesto puesto = puestoRepository.findById(idPuesto)
@@ -295,7 +287,7 @@ public class Service {
         pc.setIdCaracteristica(caracteristica);
         pc.setNivelRequerido(nivel);
 
-        puestoCaracteristicaRepository.save(pc);   // ← correcto: guarda PuestoCaracteristica
+        puestoCaracteristicaRepository.save(pc);
     }
 
     // ── CARACTERÍSTICAS ───────────────────────────────────────────────────────
@@ -410,7 +402,6 @@ public class Service {
         return reportePuestoRepository.findByMesAndAnio(mes, anio);
     }
 
-    // Retorna los nombres de los meses para el select del formulario
     public List<String> getNombresMeses() {
         return List.of(
                 "Enero", "Febrero", "Marzo", "Abril",

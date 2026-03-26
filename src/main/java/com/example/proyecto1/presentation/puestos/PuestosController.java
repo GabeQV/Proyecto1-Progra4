@@ -22,7 +22,6 @@ public class PuestosController {
         this.service = service;
     }
 
-    // GET /empresa/puestos
     @GetMapping
     public String listarPuestos(Model model, Principal principal) {
         Empresa empresa = service.buscarPorIdEmp(principal.getName());
@@ -39,7 +38,6 @@ public class PuestosController {
         return "redirect:/empresa/puestos";
     }
 
-    // GET /empresa/puestos/nuevo
     @GetMapping("/nuevo")
     public String mostrarFormulario(Model model, Principal principal) {
         Empresa empresa = service.buscarPorIdEmp(principal.getName());
@@ -49,7 +47,6 @@ public class PuestosController {
         return "puestos/nuevo-puesto";
     }
 
-    // POST /empresa/puestos/nuevo
     @PostMapping("/nuevo")
     public String guardarPuesto(
             @RequestParam String descripcion,
@@ -64,7 +61,7 @@ public class PuestosController {
                 principal.getName(), descripcion, salario, tipoPuesto,moneda);
 
         for (int i = 0; i < idCaracteristicas.size(); i++) {
-            if (niveles.get(i) > 0) {   // <-- solo guardar si hay nivel real
+            if (niveles.get(i) > 0) {
                 service.agregarCaracteristicaAPuesto(
                         puesto.getId(),
                         idCaracteristicas.get(i),

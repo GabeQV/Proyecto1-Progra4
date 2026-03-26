@@ -40,11 +40,9 @@ public class Usuario {
     @Column(name = "activo")
     private Boolean activo;
 
-    // Relación de vuelta hacia Empresa
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Empresa empresa;
 
-    // Relación de vuelta hacia Oferente
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Oferente oferente;
 
