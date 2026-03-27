@@ -40,21 +40,15 @@ public class Service {
         this.reportePuestoRepository = rpr;
     }
 
-    // ── PUBLICO ──────────────────────────────────────────────────────────────
-
 
     public List<Puesto> getTop5PuestosPublicos() {
         return puestoRepository.findTop5ByTipoPuestoAndActivoTrueOrderByFechaRegistroDesc("publico");
     }
 
-
-    // ── USUARIO ──────────────────────────────────────────────────────────────
-
     public Optional<Usuario> buscarUsuarioPorId(String id) {
         return usuarioRepo.findById(id);
     }
 
-    // ── OFERENTE ─────────────────────────────────────────────────────────────
 
     @Transactional
     public void registrarOferente(String id, String correo, String clave, String nombre,
@@ -168,7 +162,6 @@ public class Service {
         }
     }
 
-    // ── HABILIDADES OFERENTE ──────────────────────────────────────────────────
 
     public List<OferenteHabilidad> obtenerHabilidadesDeOferente(String idOferente) {
         return oferenteHabilidadRepository.findByIdOferente_Id(idOferente);
@@ -194,7 +187,6 @@ public class Service {
         oferenteHabilidadRepository.save(habilidad);
     }
 
-    // ── EMPRESA ──────────────────────────────────────────────────────────────
 
     @Transactional
     public void registrarEmpresa(String id, String correo, String clave, String nombre,
@@ -238,7 +230,6 @@ public class Service {
         return empresaRepo.findByAprobadoFalse();
     }
 
-    // ── PUESTOS ──────────────────────────────────────────────────────────────
 
     public List<Puesto> getPuestosDeEmpresa(String idEmpresa) {
         return puestoRepository.findByIdEmpresa_Id(idEmpresa);
@@ -337,7 +328,6 @@ public class Service {
         puestoCaracteristicaRepository.save(pc);
     }
 
-    // ── CARACTERÍSTICAS ───────────────────────────────────────────────────────
 
     public List<Caracteristica> getCaracteristicasRaiz() {
         return caracteristicaRepository.findByIdPadreIsNull();
@@ -380,7 +370,6 @@ public class Service {
         }
         caracteristicaRepository.save(nueva);
     }
-    // ── BÚSQUEDA DE CANDIDATOS ────────────────────────────────────────────────
 
     public static class ResultadoCandidato {
         public Oferente oferente;
@@ -442,8 +431,6 @@ public class Service {
     public List<PuestoCaracteristica> getCaracteristicasDePuesto(Integer idPuesto) {
         return puestoCaracteristicaRepository.findByIdPuesto_Id(idPuesto);
     }
-
-    // ── REPORTES ──────────────────────────────────────────────────────────────
 
     public List<ReportePuesto> getReportePorMes(int mes, int anio) {
         return reportePuestoRepository.findByMesAndAnio(mes, anio);
