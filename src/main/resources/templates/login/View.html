@@ -40,6 +40,11 @@
                     Usuario o contraseña incorrectos. Por favor, inténtelo de nuevo.
                 </div>
 
+                <div th:if="${param.pendiente}" class="alert alert-warning" role="alert">
+                    Tu cuenta aún no ha sido aprobada por el administrador.
+                    Por favor, esperá a que sea revisada antes de iniciar sesión.
+                </div>
+
                 <div th:if="${param.logout}" class="alert alert-success" role="alert">
                     Has cerrado sesión exitosamente.
                 </div>

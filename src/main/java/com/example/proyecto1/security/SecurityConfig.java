@@ -15,6 +15,9 @@ public class SecurityConfig {
 
     @Autowired
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    @Autowired
+    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -38,7 +41,7 @@ public class SecurityConfig {
                         .usernameParameter("username")
                         .passwordParameter("password")
                         .successHandler(customAuthenticationSuccessHandler)
-                        .failureUrl("/login?error")
+                        .failureHandler(customAuthenticationFailureHandler)
                         .permitAll()
                 )
                 .logout(logout -> logout
