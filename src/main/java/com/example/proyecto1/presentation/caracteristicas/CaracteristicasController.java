@@ -23,7 +23,6 @@ public class CaracteristicasController {
         this.service = service;
     }
 
-    // ── ADMIN ──────────────────────────────────────────────────────────────
 
     @GetMapping("/admin/caracteristicas")
     public String showCaracteristicasAdmin(
@@ -56,7 +55,6 @@ public class CaracteristicasController {
         return "redirect:/admin/caracteristicas";
     }
 
-    // ── OFERENTE ───────────────────────────────────────────────────────────
 
     @GetMapping("/oferente/habilidad")
     public String showHabilidadesOferente(
